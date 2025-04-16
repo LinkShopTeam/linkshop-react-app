@@ -7,7 +7,7 @@
   max-width: 1198px;
   display: flex;
   justify-content: space-between;
-  align-items: center;  
+  align-items: center;
   margin: 0 auto;
 }
 
@@ -17,6 +17,7 @@
   align-items: center;
   font-size: 20px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 /* 생성하기 버튼 */
@@ -40,11 +41,10 @@
   max-width: 1199px;
   height: 55px;
   border-radius: 49px;
-  border:1px solid #DDDCDF;
+  border: 1px solid #dddcdf;
   padding: 0 16px;
   margin: 0 auto;
   box-sizing: border-box;
-  
 }
 
 .search {
