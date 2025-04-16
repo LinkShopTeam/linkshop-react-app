@@ -1,12 +1,42 @@
-# React + Vite
+# 🛍️ LinkShop
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+링크 기반 상품 소개 페이지를 만들 수 있는 웹 서비스입니다.  
+사용자는 링크샵을 등록하고, 다른 사람의 링크샵을 둘러보며 좋아요 및 공유가 가능합니다.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📌 주요 기능
 
-## Expanding the ESLint configuration
+- 🔗 링크샵 리스트 페이지 (무한 스크롤, 검색, 정렬 필터)
+- 💖 링크샵 상세 페이지 (좋아요, 공유, 편집)
+- 📝 링크샵 생성/수정 페이지 (다중 입력, 유효성 검사, 비밀번호 보호)
+- 📱 반응형 UI (모바일 최적화)
 
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🚀 기술 스택
+
+- React + Vite
+- CSS Modules
+- Fetch API
+- GitHub Flow 협업
+
+---
+
+## 🧑‍🤝‍🧑 팀원 구성
+
+| 이름 | 역할 |
+| ---- | ---- |
+| 지선 | 팀장 |
+| 진형 | 팀원 |
+| 서현 | 팀원 |
+| 진우 | 팀원 |
+| 수현 | 팀원 |
+
+---
+
+## ⏰ 프로젝트 기간
+
+2025.04.16 ~ 2025.04.30
+
+---
