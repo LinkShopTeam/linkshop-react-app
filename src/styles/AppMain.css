@@ -1,0 +1,75 @@
+/* 헤더 영역 */
+* {
+  font-family: 'Pretendard Variable', sans-serif;
+}
+.header {
+  width: 100%;
+  max-width: 1198px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* 로고 텍스트 */
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* 생성하기 버튼 */
+.create-button {
+  background-color: #3f51f5;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  align-items: center;
+  display: flex;
+}
+
+/* 검색창 */
+.search-box {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 1199px;
+  height: 55px;
+  border-radius: 49px;
+  border: 1px solid #dddcdf;
+  padding: 0 16px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.search {
+  width: 20px;
+  height: 20px;
+  margin-right: 12px;
+}
+
+.input {
+  border: none;
+  font-size: 16px;
+  color: #888790;
+  width: 100%;
+  background: transparent;
+  outline: none;
+}
+
+.filter {
+  width: 100%;
+  max-width: 1199px;
+  display: flex;
+  align-items: center;
+  margin: 40px auto;
+}
+
+.filter-detail {
+  font-size: 18px;
+}
