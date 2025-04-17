@@ -1,0 +1,24 @@
+.empty-box {
+  position: relative;
+}
+
+.empty-wrapper {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.empty-image {
+  display: block;
+  margin: 0 auto;
+  width: 375px;
+  height: 182px;
+}
+
+.empty-text {
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 100%;
+  text-align: center;
+  margin-top: 8px;
+}
