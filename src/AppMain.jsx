@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './styles/AppMain.css';
 import { useEffect, useState } from 'react';
 import SearchNull from './components/SearchNull';
+import { getLinkShopList } from './api/linkShopApi';
 
 export default function AppMain() {
   // useState 훅을 사용하여 상태 관리
@@ -29,12 +30,9 @@ export default function AppMain() {
 
   // 검색 결과를 가져오는 함수
   // keyword가 바뀔 때마다 호출되도록 설정
-  const getLinkShopList = async () => {
-    const response = await fetch(
-      `http://linkshop-api.vercel.app/15-8/linkshops?keyword=${keyword}`,
-    );
-    const data = await response.json();
-    setLinkShopList(data);
+  const handleLinkShopList = async () => {
+    const result = await getLinkShopList(keyword);
+    setLinkShopList(result);
   };
 
   // 검색어가 바뀔 때마다 getLinkShopList 호출
@@ -49,9 +47,9 @@ export default function AppMain() {
     setKeyword(event.target['keyword'].value);
   };
 
-  // 컴포넌트가 마운트될 때 getLinkShopList 호출
+  // 컴포넌트가 마운트될 때 handleLinkShopList 호출
   useEffect(() => {
-    getLinkShopList();
+    handleLinkShopList();
   }, []);
 
   return (
