@@ -3,7 +3,7 @@ const teamId = '15-8'; // teamId를 고정값으로 설정
 const baseUrl = `https://linkshop-api.vercel.app/${teamId}/linkshops`;
 
 export const fetchLinkShopDetail = async (linkShopId) => {
-  const response = await fetch(`https://linkshop-api.vercel.app/${teamId}/linkshops/${linkShopId}`);
+  const response = await fetch(`${baseUrl}/${linkShopId}`);
 
   // 404 에러 처리
   if (response.status === 404) {
