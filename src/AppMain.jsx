@@ -4,7 +4,7 @@ import { getLinkShopList } from './api/linkShopApi';
 import FilterModal from './components/FilterModal';
 import LinkCard from './components/LinkCard';
 import SearchNull from './components/SearchNull';
-import './styles/AppMain.css';
+import styles from './styles/AppMain.module.css'; // ← 모듈 스타일로 불러옴
 
 export default function AppMain() {
   const [showFilter, setShowFilter] = useState(false);
@@ -40,39 +40,39 @@ export default function AppMain() {
 
   useEffect(() => {
     handleLinkShopList();
-  }, [keyword, orderBy]); // 🔁 정렬 기준 바뀔 때마다 호출됨
+  }, [keyword, orderBy]);
 
   return (
     <>
-      <div className='header'>
-        <h1 className='logo' onClick={handleLogoClick}>
+      <div className={styles.header}>
+        <h1 className={styles.logo} onClick={handleLogoClick}>
           LINK SHOP
         </h1>
         <h1>
-          <button className='create-button' onClick={handleCreateClick}>
+          <button className={styles['create-button']} onClick={handleCreateClick}>
             생성하기
           </button>
         </h1>
       </div>
 
       <form onSubmit={handleSearchSubmit}>
-        <div className='search-box'>
-          <img className='search' src='/images/search.svg' />
+        <div className={styles['search-box']}>
+          <img className={styles.search} src='/images/search.svg' alt='검색 아이콘' />
           <input
             name='keyword'
             value={keyword}
             onChange={handleKeywordChange}
-            className='input'
+            className={styles.input}
             type='text'
             placeholder='샵 이름으로 검색해 보세요.'
           />
         </div>
       </form>
 
-      <div className='filter'>
-        <span className='filter-detail' onClick={() => setShowFilter(true)}>
+      <div className={styles.filter}>
+        <span className={styles['filter-detail']} onClick={() => setShowFilter(true)}>
           상세필터
-          <img className='filter-button' src='/images/filter.png' alt='필터 아이콘' />
+          <img className={styles['filter-button']} src='/images/filter.png' alt='필터 아이콘' />
         </span>
       </div>
 
@@ -80,7 +80,7 @@ export default function AppMain() {
         <FilterModal orderBy={orderBy} setOrderBy={setOrderBy} setShowFilter={setShowFilter} />
       )}
 
-      <main className='main-container'>
+      <main className={styles['main-container']}>
         {linkShoplist?.length > 0
           ? linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
           : hasSearched && <SearchNull />}

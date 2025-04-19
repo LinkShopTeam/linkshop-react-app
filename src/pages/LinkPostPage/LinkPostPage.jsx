@@ -52,4 +52,4 @@ const LinkPostPage = () => {
   );
 };
 
-export default LinkEditPage;
+export default LinkPostPage;
