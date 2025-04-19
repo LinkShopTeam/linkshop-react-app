@@ -4,6 +4,7 @@ import './styles/AppMain.css';
 import { useEffect, useState } from 'react';
 import SearchNull from './components/SearchNull';
 import { getLinkShopList } from './api/linkShopApi';
+import LinkCard from './components/LinkCard';
 
 export default function AppMain() {
   // useState 훅을 사용하여 상태 관리
@@ -66,7 +67,6 @@ export default function AppMain() {
           </button>
         </h1>
       </div>
-
       <form onSubmit={handleSearchSubmit}>
         <div className='search-box'>
           <img className='search' src='/images/search.svg' />
@@ -80,15 +80,18 @@ export default function AppMain() {
           />
         </div>
       </form>
-
       <div className='filter'>
         <span className='filter-detail'>
           상세필터
           <img className='filter-button' src='/images/filter.png' />
         </span>
       </div>
-
-      {/* 조건부 렌더링 */}
+      <main className='main-container'>
+        {linkShoplist?.length > 0
+          ? linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
+          : hasSearched && <SearchNull />}
+      </main>
+      조건부 렌더링
       {!hasSearched ? (
         <div>카드를 보여주세요</div>
       ) : linkShoplist?.length > 0 ? (

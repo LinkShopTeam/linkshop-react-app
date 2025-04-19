@@ -73,3 +73,21 @@
 .filter-detail {
   font-size: 18px;
 }
+
+/*카드영역*/
+.main-container {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); */
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 1198px;
+  margin: 0 auto;
+}
+
+/* 태블릿 이하 (768px 이하)부터는 카드 1개씩 */
+
+@media (max-width: 768px) {
+  .main-container {
+    grid-template-columns: 1fr;
+  }
+}
