@@ -1,5 +1,9 @@
 .empty-box {
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 300px; /* 적절한 높이 조정 가능 */
 }
 
 .empty-wrapper {

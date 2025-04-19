@@ -1,0 +1,88 @@
+/* 전체 카드 */
+.shop-card {
+  width: 100%;
+  max-width: 587px;
+  height: 237px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  font-family: 'Pretendard', sans-serif;
+  margin: 0 auto;
+}
+
+/* 상단 프로필 영역 */
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 왼쪽: 프로필 */
+.shop-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* 상점 이름 */
+.shop-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+/* 유저 이름 */
+.shop-username {
+  font-size: 16px;
+  font-weight: 400;
+  color: #888790;
+}
+
+/* 좋아요 (오른쪽 상단) */
+.shop-likes {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #000;
+  font-weight: 500;
+}
+
+.heart-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+}
+
+/* 대표 상품 텍스트 */
+.shop-products-label {
+  margin-top: 20px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+/* 대표 상품 이미지 3개 */
+.shop-products {
+  display: flex;
+  flex-direction: row; /* 가로 정렬 */
+  gap: 12px; /* 이미지 간 간격 */
+  margin-top: 8px;
+  flex-wrap: nowrap; /* 줄바꿈 없이 가로로 나열 */
+  overflow-x: auto; /* 넘치면 가로 스크롤 가능 */
+}
+
+.product-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0; /* 줄어들지 않도록 고정 */
+}

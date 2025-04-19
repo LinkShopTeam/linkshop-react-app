@@ -2,6 +2,7 @@
 const teamId = '15-8'; // teamId를 고정값으로 설정
 const baseUrl = `https://linkshop-api.vercel.app/${teamId}/linkshops`;
 
+// 링크샵 상세 정보 가져오기
 export const fetchLinkShopDetail = async (linkShopId) => {
   const response = await fetch(`https://linkshop-api.vercel.app/${teamId}/linkshops/${linkShopId}`);
 
@@ -18,8 +19,15 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   return response.json();
 };
 
-export const getLinkShopList = async (keyword) => {
-  const response = await fetch(`${baseUrl}?keyword=${keyword}`);
+export const getLinkShopList = async (keyword = '', orderBy = 'recent') => {
+  console.log(orderBy);
+  const url = `${baseUrl}?keyword=${encodeURIComponent(keyword)}&orderBy=${orderBy}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error('링크샵 리스트 요청 실패');
+  }
+
   const data = await response.json();
   return data.list;
 };
