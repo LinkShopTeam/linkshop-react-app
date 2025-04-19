@@ -21,5 +21,5 @@ export const fetchLinkShopDetail = async (linkShopId) => {
 export const getLinkShopList = async (keyword) => {
   const response = await fetch(`${baseUrl}?keyword=${keyword}`);
   const data = await response.json();
-  return data;
+  return data.list;
 };
