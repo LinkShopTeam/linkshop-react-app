@@ -1,0 +1,15 @@
+/* ProductList component */
+.productList {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  margin-top: 8px;
+}
+
+.productImage {
+  width: 100px;
+  height: 100px;
+  border-radius: 16px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
