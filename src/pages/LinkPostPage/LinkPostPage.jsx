@@ -14,18 +14,15 @@ const LinkPostPage = () => {
           <h2 className={styles.sectionTitle}>대표 상품</h2>
           <button className={styles.addButton}>추가</button>
         </div>
-
-        {[1, 2].map((_, idx) => (
-          <div key={idx} className={styles.card}>
-            <p className={styles.label}>상품 대표 이미지</p>
-            <p className={styles.hint}>상품 이미지를 첨부해주세요</p>
-            <p className={styles.label}>상품 이름</p>
-            <p className={styles.hint}>상품 이름을 입력해 주세요.</p>
-            <p className={styles.label}>상품 가격</p>
-            <p className={styles.hint}>원화로 표기해 주세요.</p>
-            <button className={styles.uploadButton}>파일 첨부</button>
-          </div>
-        ))}
+        <div className={styles.card}>
+          <p className={styles.label}>상품 대표 이미지</p>
+          <p className={styles.hint}>상품 이미지를 첨부해주세요</p>
+          <p className={styles.label}>상품 이름</p>
+          <p className={styles.hint}>상품 이름을 입력해 주세요.</p>
+          <p className={styles.label}>상품 가격</p>
+          <p className={styles.hint}>원화로 표기해 주세요.</p>
+          <button className={styles.uploadButton}>파일 첨부</button>
+        </div>
       </section>
 
       <section className={styles.section}>
@@ -52,4 +49,4 @@ const LinkPostPage = () => {
   );
 };
 
-export default LinkEditPage;
+export default LinkDetailPage;
