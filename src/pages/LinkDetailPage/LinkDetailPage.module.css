@@ -1,8 +1,100 @@
 .pageWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 1200px;
+  padding: 24px;
+  max-width: 800px;
   margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.backButton,
+.addButton,
+.uploadButton,
+.submitButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backButton img,
+.addButton img,
+.uploadButton img,
+.submitButton img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.section {
+  margin-top: 32px;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.card {
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  margin-top: 16px;
+}
+
+.label {
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+.hint {
+  font-size: 14px;
+  color: #777;
+}
+
+.submitWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.iconButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  background-color: transparent;
+  border: none;            
+  outline: none;                
+  font-size: 14px;
 }
