@@ -8,7 +8,11 @@ const LinkCard = ({ data }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <img src={shop.imageUrl} alt='store icon' className={styles.avatar} />
+        <img
+          src={shop.imageUrl !== 'https://example.com/...' ? shop.imageUrl : '/images/profile1.png'}
+          alt='store icon'
+          className={styles.avatar}
+        />
         <div>
           <h2 className={styles.storeName}>{name}</h2>
           <p className={styles.handle}>@{userId}</p>
