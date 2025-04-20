@@ -4,7 +4,7 @@ const baseUrl = `https://linkshop-api.vercel.app/${teamId}/linkshops`;
 
 // 링크샵 상세 정보 가져오기
 export const fetchLinkShopDetail = async (linkShopId) => {
-  const response = await fetch(`https://linkshop-api.vercel.app/${teamId}/linkshops/${linkShopId}`);
+  const response = await fetch(`${baseUrl}/${linkShopId}`);
 
   // 404 에러 처리
   if (response.status === 404) {

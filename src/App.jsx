@@ -2,7 +2,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AppMain from './AppMain';
-import LinkDetailPage from './pages/LinkDetailPage';
+import LinkDetailPage from './pages/LinkDetailPage/LinkDetailPage';
 import LinkPostPage from './pages/LinkPostPage/LinkPostPage';
 import ListPage from './pages/ListPage/index';
 

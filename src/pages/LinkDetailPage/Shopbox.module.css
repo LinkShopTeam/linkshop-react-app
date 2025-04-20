@@ -1,0 +1,115 @@
+.shopBox {
+    width: 100%;
+    max-width: 1200px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 24px;
+    background-color: #FAFAFB;
+    overflow: hidden;
+}
+
+.icons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.rightIcons {
+    display: flex;
+    gap: 10px;
+    position: relative;
+}
+
+.icon {
+    width: 23px;
+    height: 23px;
+    cursor: pointer;
+}
+
+.image {
+    width: 84px;
+    height: 84px;
+    border-radius: 50px;
+    margin-bottom: 10px;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+}
+
+.name {
+    font-size: 32px;
+    font-weight: 800;
+}
+
+.likes {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.userId {
+    color: #888790;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* 미트볼 아이콘을 감싸는 wrapper */
+.meatballIconWrapper {
+    position: relative;
+    /* 드롭다운을 이 아이콘을 기준으로 띄우기 위해 relative 설정 */
+}
+
+/* 드롭다운 메뉴 */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    /* 미트볼 아이콘 바로 아래로 드롭다운 위치 */
+    right: 0;
+    background-color: white;
+    border: 1px solid #DDDDDD;
+    border-radius: 6px;
+    width: 160px;
+    z-index: 10;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.dropdownItem {
+    width: 100%;
+    padding: 18px;
+    background-color: transparent;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.dropdownItemBottom {
+    width: 100%;
+    padding: 18px;
+    background-color: transparent;
+    text-align: center;
+    border: none;
+    border-top: 1px solid #DDDDDD;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.dropdownItem:hover {
+    background-color: #f0f0f0;
+}
+
+.dropdownItemBottom:hover {
+    background-color: #f0f0f0;
+}

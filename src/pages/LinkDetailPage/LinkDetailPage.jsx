@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchLinkShopDetail } from '../../api/linkShopApi';
 import { Spinner } from '../../components/Spinner';
+import styles from './LinkDetailPage.module.css';
+import Shopbox from './Shopbox';
 
 function LinkDetailPage() {
   const { linkshopId } = useParams();
@@ -15,6 +17,7 @@ function LinkDetailPage() {
       try {
         const result = await fetchLinkShopDetail(linkshopId); // API 호출
         setData(result); // 성공 시 데이터 저장
+        console.log(result);
         setIsLoading(false); // 로딩 완료
       } catch (error) {
         setError(error.message); // 에러 발생 시 에러 메시지 설정
@@ -35,7 +38,16 @@ function LinkDetailPage() {
 
   // 데이터가 정상적으로 로드되었을 때
   return (
-    <div>
+    <div className={styles.pageWrapper}>
+      <Shopbox
+        likes={data.likes}
+        img={data.shop.imageUrl}
+        alt={data.shop.urlName}
+        name={data.name}
+        userId={data.userId}
+        urlName={data.shop.urlName}
+        href={data.shop.shopUrl}
+      />
       <h1>{data.name}</h1>
       <p>사용자 ID: {data.userId}</p>
       <p>좋아요 수: {data.likes}</p>
