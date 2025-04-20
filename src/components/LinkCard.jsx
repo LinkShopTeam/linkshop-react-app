@@ -17,7 +17,9 @@ const LinkCard = ({ data }) => {
           <h2 className={styles.storeName}>{name}</h2>
           <p className={styles.handle}>@{userId}</p>
         </div>
-        <div className={styles.likes}>❤️ {likes}</div>
+        <div className={styles.likes}>
+          <img src='/icons/status=fill.png' alt='heart' className={styles.heartIcon} /> {likes}
+        </div>
       </div>
       <p className={styles.productCount}>대표 상품 {products.length}</p>
       <ProductList products={products} />
