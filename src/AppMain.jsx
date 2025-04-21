@@ -17,6 +17,7 @@ export default function AppMain() {
   // hasSearched는 검색어가 입력되었는지 여부를 나타냄
   const [hasSearched, setHasSearched] = useState(false);
 
+  // 리액트 라우터의 navigate 함수 가져오기
   const navigate = useNavigate();
 
   // 로고 클릭 → /list로 이동
@@ -41,11 +42,23 @@ export default function AppMain() {
     setKeyword(event.target.value);
   };
 
-  // form의 submit 이벤트를 처리하는 함수
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    setHasSearched(true);
-    setKeyword(event.target['keyword'].value);
+  // 검색 폼 제출 처리
+  const handleSearchSubmit = async (event) => {
+    event.preventDefault(); // 폼의 기본 동작(새로고침) 방지
+
+    const term = keyword.trim().toLowerCase();
+    if (!term) return; // 빈 문자열이면 검색 중단
+
+    setHasSearched(true); // 검색 실행 플래그 설정
+
+    const result = await getLinkShopList(term); // API로 검색 결과 가져오기
+    const filtered = result.filter((shop) => shop.name.toLowerCase().includes(term)); //API가 부분 매칭을 지원하지 않을 경우, 클라이언트 필터링
+
+    // 필터링된 결과를 상태에 저장
+    setLinkShopList(filtered);
+
+    // 검색 후에도 input 창에 키워드를 유지
+    setKeyword(term);
   };
 
   // 컴포넌트가 마운트될 때 handleLinkShopList 호출
@@ -55,6 +68,7 @@ export default function AppMain() {
 
   return (
     <>
+      {/* 헤더 영역: 로고와 생성하기 버튼 */}
       <div className='header'>
         {/* 로고 클릭 시 /list 이동 */}
         <h1 className='logo' onClick={handleLogoClick}>
@@ -67,6 +81,8 @@ export default function AppMain() {
           </button>
         </h1>
       </div>
+
+      {/* 검색 폼 */}
       <form onSubmit={handleSearchSubmit}>
         <div className='search-box'>
           <img className='search' src='/images/search.svg' />
@@ -80,28 +96,30 @@ export default function AppMain() {
           />
         </div>
       </form>
+
+      {/* 상세 필터 UI (추가 기능 가능) */}
       <div className='filter'>
         <span className='filter-detail'>
           상세필터
           <img className='filter-button' src='/images/filter.png' />
         </span>
       </div>
+
+      {/* 메인 컨텐츠: 검색 전/후, 결과 유무에 따른 조건부 렌더링 */}
       <main className='main-container'>
-        {linkShoplist?.length > 0
-          ? linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
-          : hasSearched && <SearchNull />}
+        {!hasSearched ? (
+          // 검색 전: 전체 리스트 혹은 기본 안내문구
+          linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
+        ) : linkShoplist.length > 0 ? (
+          // 검색 후 결과 있음
+          linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
+        ) : (
+          // 검색 후 결과 없음
+          <div className='search-null'>
+            <SearchNull />
+          </div>
+        )}
       </main>
-      조건부 렌더링
-      {!hasSearched ? (
-        <div>카드를 보여주세요</div>
-      ) : linkShoplist?.length > 0 ? (
-        <div>카드를 보여주세요</div>
-      ) : (
-        <div>
-          {/* 검색 결과가 없을 때 보여줄 component */}
-          <SearchNull />
-        </div>
-      )}
     </>
   );
 }
