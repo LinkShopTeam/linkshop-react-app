@@ -1,21 +1,22 @@
-.empty-box {
+.emptyBox {
   position: relative;
 }
 
-.empty-wrapper {
+.emptyWrapper {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
 
-.empty-image {
+.emptyImage {
   display: block;
   margin: 0 auto;
   width: 375px;
   height: 182px;
+  text-align: center;
 }
 
-.empty-text {
+.emptyText {
   font-weight: 500;
   font-size: 17px;
   line-height: 100%;
