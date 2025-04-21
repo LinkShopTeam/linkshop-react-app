@@ -1,11 +1,11 @@
-import '../styles/SearchNull.css';
+import styles from '../styles/components/SearchNull.module.css';
 
 const SearchNull = () => {
   return (
-    <div className='empty-box'>
-      <div className='empty-wrapper'>
-        <img className='empty-image' src='/images/empty.png' />
-        <div className='empty-text'>
+    <div className={styles.emptyBox}>
+      <div className={styles.emptyWrapper}>
+        <img className={styles.emptyImage} src='/images/empty.png' />
+        <div className={styles.emptyText}>
           <p>검색결과가 없어요</p>
           <p>지금 프로필을 만들고 내 상품을 소개해보세요</p>
         </div>
