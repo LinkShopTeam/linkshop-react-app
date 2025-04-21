@@ -1,12 +1,18 @@
 // LinkCard.jsx
+import { useNavigate } from 'react-router-dom';
 import styles from '../styles/components/LinkCard.module.css';
 import ProductList from './ProductList';
 
 const LinkCard = ({ data }) => {
   const { name, userId, likes, products, shop } = data;
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/link/:linkshopId');
+  };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={handleClick}>
       <div className={styles.header}>
         <img src={shop.imageUrl} alt='store icon' className={styles.avatar} />
         <div>
