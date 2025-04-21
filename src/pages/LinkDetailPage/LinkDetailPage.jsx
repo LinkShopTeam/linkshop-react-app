@@ -130,9 +130,23 @@ const LinkDetailPage = () => {
             onChange={(e) => handleShopInfoChange('password', e.target.value)}
             placeholder="비밀번호를 입력해주세요."
           />
-          <button className={styles.iconButton}>
-            <img src="/images/fileadder.png" alt="파일 첨부" />
-          </button>
+          <>
+            <input
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              id={`file-input-${index}`}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                const newProducts = [...mainProducts];
+                newProducts[index].image = file;
+                setMainProducts(newProducts);
+              }}
+            />
+            <label htmlFor={`file-input-${index}`} className={styles.iconButton}>
+              <img src="/images/fileadder.png" alt="파일 첨부" />
+            </label>
+          </>
         </div>
       </section>
 
