@@ -5,12 +5,19 @@ import { Spinner } from '../../components/Spinner';
 import ProductImage from '../../components/ProductImage';
 import styles from './LinkDetailPage.module.css';
 import Shopbox from './Shopbox';
+import { useNavigate } from 'react-router-dom';
 
 function LinkDetailPage() {
   const { linkshopId } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/list');
+  };
 
   // 컴포넌트가 마운트될 때 API 호출
   useEffect(() => {
@@ -40,6 +47,10 @@ function LinkDetailPage() {
   // 데이터가 정상적으로 로드되었을 때
   return (
     <div className={styles.pageWrapper}>
+      <div className={styles.back} onClick={handleClick}>
+        <img src='/icons/back.png' alt='back' width={16} height={16} />
+        돌아가기
+      </div>
       <Shopbox
         likes={data.likes}
         img={data.shop.imageUrl}
