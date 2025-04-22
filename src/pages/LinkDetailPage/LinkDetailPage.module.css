@@ -6,3 +6,47 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+
+.productsWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.productsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 20px 0;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.productImage {
+  border-radius: 10px;
+}
+
+.product {
+  display: flex;
+  background-color: #FAFAFB;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+.productInfo {
+  margin-left: 20px;
+}
+
+.productName {
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.productPrice {
+  font-size: 20px;
+  font-weight: 700;
+}
