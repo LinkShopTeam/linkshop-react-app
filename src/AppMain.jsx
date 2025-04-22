@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLinkShopList } from './api/linkShopApi';
+import FilterModal from './components/FilterModal';
 import LinkCard from './components/LinkCard';
 import SearchNull from './components/SearchNull';
 import styles from './styles/AppMain.module.css';
 
 export default function AppMain() {
+  // 모달 열고 닫는 상태
+  const [showFilter, setShowFilter] = useState(false);
+  // 정렬 기준 상태 (초기값: recent = 최신순)
+  const [orderBy, setOrderBy] = useState('recent');
+
   // useState 훅을 사용하여 상태 관리
   const [linkShoplist, setLinkShopList] = useState([]);
 
@@ -32,7 +38,7 @@ export default function AppMain() {
   // 검색 결과를 가져오는 함수
   // keyword가 바뀔 때마다 호출되도록 설정
   const handleLinkShopList = async () => {
-    const result = await getLinkShopList(keyword);
+    const result = await getLinkShopList(keyword, orderBy);
     setLinkShopList(result);
   };
 
@@ -63,7 +69,7 @@ export default function AppMain() {
   // 컴포넌트가 마운트될 때 handleLinkShopList 호출
   useEffect(() => {
     handleLinkShopList();
-  }, []);
+  }, [orderBy, keyword]);
 
   return (
     <>
@@ -98,11 +104,19 @@ export default function AppMain() {
 
       {/* 상세 필터 UI (추가 기능 가능) */}
       <div className={styles.filter}>
-        <span className={styles['filter-detail']}>
+        <span
+          className={styles['filter-detail']}
+          onClick={() => setShowFilter(true)} // 클릭하면 모달 오픈
+        >
           상세필터
           <img className={styles['filter-button']} src='/images/filter.png' alt='필터 아이콘' />
         </span>
       </div>
+
+      {/* 상세필터모달 렌더링 */}
+      {showFilter && (
+        <FilterModal orderBy={orderBy} setOrderBy={setOrderBy} setShowFilter={setShowFilter} />
+      )}
 
       {/* 메인 컨텐츠: 검색 전/후, 결과 유무에 따른 조건부 렌더링 */}
       <main className={styles['main-container']}>
