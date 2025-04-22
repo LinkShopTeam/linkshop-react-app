@@ -29,7 +29,7 @@ export default function AppMain() {
     navigate('/linkpost');
   };
 
-  // 처음 로딩 / 검색 시 호출
+  // 처음 데이터 요청(초기 로딩 또는 검색 시 사용됨)
   const fetchInitialShops = async (customKeyword = keyword) => {
     try {
       setIsFetching(true);
@@ -46,27 +46,27 @@ export default function AppMain() {
 
   // 무한스크롤 감지될 때 다음 페이지 로드
   const fetchMoreShops = async () => {
-    if (!hasNextPage || isFetching) return;
+    if (!hasNextPage || isFetching) return; //이미 로딩 중이거나 끝이라면 중단
     try {
       setIsFetching(true);
       const res = await getLinkShopList({ cursor, keyword });
-      setLinkShopList((prev) => [...prev, ...res.list]);
-      setCursor(res.nextCursor);
-      setHasNextPage(res.nextCursor !== null);
+      setLinkShopList((prev) => [...prev, ...res.list]); // 기존 리스트에 추가
+      setCursor(res.nextCursor); //커서 업데이트
+      setHasNextPage(res.nextCursor !== null); // 다음 페이지 여부 업데이트
     } catch (err) {
       console.error(err);
     } finally {
       setIsFetching(false);
     }
   };
-
+  // 무한스크롤 훅 사용: 감지되면 fetchMoreShops 자동 실행
   const { ref: infiniteScrollRef } = useInfiniteScroll({
     fetchNextPage: fetchMoreShops,
     hasNextPage,
     isFetching,
   });
 
-  // 검색어가 바뀔 때마다 getLinkShopList 호출
+  // 검색어 입력 시 상태 업데이트
   const handleKewordChange = (event) => {
     setKeyword(event.target.value);
   };
@@ -79,10 +79,10 @@ export default function AppMain() {
     if (!term) return; // 빈 문자열이면 검색 중단
 
     setHasSearched(true);
-    setLinkShopList([]);
-    setCursor(null);
-    setHasNextPage(true);
-    await fetchInitialShops(term);
+    setLinkShopList([]); // 기존 리스트 초기화
+    setCursor(null); // 커서 초기화
+    setHasNextPage(true); //  페이징 초기화
+    await fetchInitialShops(term); // 검색어로 다시 fetch
   };
 
   return (
@@ -139,9 +139,7 @@ export default function AppMain() {
           </div>
         )}
 
-        {hasNextPage && (
-          <div ref={infiniteScrollRef} style={{ height: '20px', background: 'yellow' }} /> //옐로우는 확인용
-        )}
+        {hasNextPage && <div ref={infiniteScrollRef} style={{ height: '20px' }} />}
       </main>
     </>
   );

@@ -5,7 +5,7 @@ import ProductList from './ProductList';
 import React from 'react';
 
 const LinkCard = React.forwardRef(({ data }, ref) => {
-  const { id, name, userId, likes, products, shop } = data;
+  const { name, userId, likes, products, shop } = data;
 
   const navigate = useNavigate();
 
