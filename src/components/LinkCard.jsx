@@ -4,11 +4,11 @@ import styles from '../styles/components/LinkCard.module.css';
 import ProductList from './ProductList';
 
 const LinkCard = ({ data }) => {
-  const { name, userId, likes, products, shop } = data;
+  const { name, userId, likes, products, shop, id } = data;
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/link/:linkshopId');
+    navigate(`/link/${id}`);
   };
 
   return (
