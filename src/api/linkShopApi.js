@@ -18,8 +18,28 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   return response.json();
 };
 
-export const getLinkShopList = async (keyword) => {
-  const response = await fetch(`${baseUrl}?keyword=${keyword}`);
+// 커서 기반 링크샵 목록 API
+export const getLinkShopList = async ({ cursor = null, keyword = '' }) => {
+  const query = new URLSearchParams();
+  if (cursor) query.append('cursor', cursor);
+  if (keyword) query.append('keyword', keyword);
+
+  const response = await fetch(`${baseUrl}?${query.toString()}`);
+
+  if (!response.ok) {
+    throw new Error('링크샵 목록을 불러오지 못했습니다.');
+  }
+
   const data = await response.json();
-  return data.list;
+
+  return {
+    list: data.list, // 링크샵 배열
+    nextCursor: data.nextCursor, // 다음 요청에 사용할 커서 (null이면 끝)
+  };
 };
+
+// export const getLinkShopList = async (keyword) => {
+//   const response = await fetch(`${baseUrl}?keyword=${keyword}`);
+//   const data = await response.json();
+//   return data.list;
+// };

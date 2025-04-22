@@ -5,37 +5,66 @@ import { useEffect, useState } from 'react';
 import SearchNull from './components/SearchNull';
 import { getLinkShopList } from './api/linkShopApi';
 import LinkCard from './components/LinkCard';
+import useInfiniteScroll from './hooks/useInfiniteScroll';
 
 export default function AppMain() {
-  // useState 훅을 사용하여 상태 관리
   const [linkShoplist, setLinkShopList] = useState([]);
-
-  // 검색어를 저장할 상태 변수
   const [keyword, setKeyword] = useState('');
-
-  // 검색 결과를 보여줄지 여부를 저장할 상태 변수
-  // hasSearched는 검색어가 입력되었는지 여부를 나타냄
   const [hasSearched, setHasSearched] = useState(false);
+  const [cursor, setCursor] = useState(null);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
 
-  // 리액트 라우터의 navigate 함수 가져오기
   const navigate = useNavigate();
 
-  // 로고 클릭 → /list로 이동
+  useEffect(() => {
+    fetchInitialShops();
+  }, []);
+
   const handleLogoClick = () => {
     navigate('/list');
   };
 
-  // 생성하기 버튼 클릭 → /linkpost로 이동
   const handleCreateClick = () => {
     navigate('/linkpost');
   };
 
-  // 검색 결과를 가져오는 함수
-  // keyword가 바뀔 때마다 호출되도록 설정
-  const handleLinkShopList = async () => {
-    const result = await getLinkShopList(keyword);
-    setLinkShopList(result);
+  // 처음 로딩 / 검색 시 호출
+  const fetchInitialShops = async (customKeyword = keyword) => {
+    try {
+      setIsFetching(true);
+      const res = await getLinkShopList({ keyword: customKeyword });
+      setLinkShopList(res.list);
+      setCursor(res.nextCursor);
+      setHasNextPage(res.nextCursor !== null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
   };
+
+  // 무한스크롤 감지될 때 다음 페이지 로드
+  const fetchMoreShops = async () => {
+    if (!hasNextPage || isFetching) return;
+    try {
+      setIsFetching(true);
+      const res = await getLinkShopList({ cursor, keyword });
+      setLinkShopList((prev) => [...prev, ...res.list]);
+      setCursor(res.nextCursor);
+      setHasNextPage(res.nextCursor !== null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const { ref: infiniteScrollRef } = useInfiniteScroll({
+    fetchNextPage: fetchMoreShops,
+    hasNextPage,
+    isFetching,
+  });
 
   // 검색어가 바뀔 때마다 getLinkShopList 호출
   const handleKewordChange = (event) => {
@@ -49,22 +78,12 @@ export default function AppMain() {
     const term = keyword.trim().toLowerCase();
     if (!term) return; // 빈 문자열이면 검색 중단
 
-    setHasSearched(true); // 검색 실행 플래그 설정
-
-    const result = await getLinkShopList(term); // API로 검색 결과 가져오기
-    const filtered = result.filter((shop) => shop.name.toLowerCase().includes(term)); //API가 부분 매칭을 지원하지 않을 경우, 클라이언트 필터링
-
-    // 필터링된 결과를 상태에 저장
-    setLinkShopList(filtered);
-
-    // 검색 후에도 input 창에 키워드를 유지
-    setKeyword(term);
+    setHasSearched(true);
+    setLinkShopList([]);
+    setCursor(null);
+    setHasNextPage(true);
+    await fetchInitialShops(term);
   };
-
-  // 컴포넌트가 마운트될 때 handleLinkShopList 호출
-  useEffect(() => {
-    handleLinkShopList();
-  }, []);
 
   return (
     <>
@@ -118,6 +137,10 @@ export default function AppMain() {
           <div className='search-null'>
             <SearchNull />
           </div>
+        )}
+
+        {hasNextPage && (
+          <div ref={infiniteScrollRef} style={{ height: '20px', background: 'yellow' }} /> //옐로우는 확인용
         )}
       </main>
     </>

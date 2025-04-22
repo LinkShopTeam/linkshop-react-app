@@ -2,9 +2,11 @@
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/components/LinkCard.module.css';
 import ProductList from './ProductList';
+import React from 'react';
 
-const LinkCard = ({ data }) => {
-  const { name, userId, likes, products, shop } = data;
+const LinkCard = React.forwardRef(({ data }, ref) => {
+  const { id, name, userId, likes, products, shop } = data;
+
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -12,7 +14,7 @@ const LinkCard = ({ data }) => {
   };
 
   return (
-    <div className={styles.container} onClick={handleClick}>
+    <div className={styles.container} ref={ref} onClick={handleClick}>
       <div className={styles.header}>
         <img
           src={shop.imageUrl !== 'https://example.com/...' ? shop.imageUrl : '/images/profile1.png'}
@@ -31,6 +33,6 @@ const LinkCard = ({ data }) => {
       <ProductList products={products} />
     </div>
   );
-};
+});
 
 export default LinkCard;
