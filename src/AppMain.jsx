@@ -108,7 +108,7 @@ export default function AppMain() {
       {/* 메인 컨텐츠: 검색 전/후, 결과 유무에 따른 조건부 렌더링 */}
       <main className='main-container'>
         {!hasSearched ? (
-          // 검색 전: 전체 리스트 혹은 기본 안내문구
+          // 검색 전: 전체 리스트
           linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
         ) : linkShoplist.length > 0 ? (
           // 검색 후 결과 있음
