@@ -1,162 +1,78 @@
-// src/pages/LinkDetailPage/LinkDetailPage.jsx
-import React, { useState } from 'react';
-import styles from './LinkDetailPage.module.css';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { fetchLinkShopDetail } from '../../api/linkShopApi';
+import { Spinner } from '../../components/Spinner';
+import styles from './LinkDetailPage.module.css';
+import Shopbox from './Shopbox';
 
-const LinkDetailPage = () => {
-  const [mainProducts, setMainProducts] = useState([
-    { name: '', price: '', image: null },
-    { name: '', price: '', image: null },
-    { name: '', price: '', image: null },
-  ]);
+function LinkDetailPage() {
+  const { linkshopId } = useParams();
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const [shopInfo, setShopInfo] = useState({
-    name: '',
-    url: '',
-    userId: '',
-    password: '',
-    image: null,
-  });
-
-  const handleAddProduct = () => {
-    if (mainProducts.length < 3) {
-      setMainProducts([...mainProducts, { name: '', price: '', image: null }]);
-    }
-  };
-
-  const handleMainProductChange = (index, field, value) => {
-    const updatedProducts = [...mainProducts];
-    updatedProducts[index][field] = value;
-    setMainProducts(updatedProducts);
-  };
-
-  const handleShopInfoChange = (field, value) => {
-    setShopInfo((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSubmit = async () => {
-    const payload = {
-      mainProducts,
-      shopInfo,
+  // 컴포넌트가 마운트될 때 API 호출
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const result = await fetchLinkShopDetail(linkshopId); // API 호출
+        setData(result); // 성공 시 데이터 저장
+        console.log(result);
+        setIsLoading(false); // 로딩 완료
+      } catch (error) {
+        setError(error.message); // 에러 발생 시 에러 메시지 설정
+        setIsLoading(false); // 로딩 완료
+      }
     };
 
-    try {
-      const result = await fetchLinkShopDetail(payload);
-      alert('링크샵 생성 완료!');
-      console.log(result);
-    } catch (error) {
-      alert(error.message);
+    if (linkshopId) {
+      fetchData(); // linkshopId가 있을 때만 호출
     }
-  };
+  }, [linkshopId]); // linkshopId가 변경될 때마다 다시 호출
 
+  // 로딩 중일 때
+  if (isLoading) return <Spinner />;
+
+  // 에러 발생 시
+  if (error) return <p>{error}</p>;
+
+  // 데이터가 정상적으로 로드되었을 때
   return (
     <div className={styles.pageWrapper}>
-      <header className={styles.header}>
-        <img src="/images/logo.png" alt="Link Shop Logo" className={styles.logo} />
-        <button className={styles.iconButton}>
-          <img src="/images/frame5.png" alt="돌아가기" />
-        </button>
-      </header>
+      <Shopbox
+        likes={data.likes}
+        img={data.shop.imageUrl}
+        alt={data.shop.urlName}
+        name={data.name}
+        userId={data.userId}
+        urlName={data.shop.urlName}
+        href={data.shop.shopUrl}
+      />
+      <h1>{data.name}</h1>
+      <p>사용자 ID: {data.userId}</p>
+      <p>좋아요 수: {data.likes}</p>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>대표 상품</h2>
-          <button className={styles.iconButton} onClick={handleAddProduct}>
-            <img src="/images/adder.png" alt="추가" />
-          </button>
-        </div>
+      <h2>쇼핑몰 정보</h2>
+      <div>
+        <img src={data.shop.imageUrl} alt={data.shop.urlName} width={100} />
+        <p>쇼핑몰 이름: {data.shop.urlName}</p>
+        <a href={data.shop.shopUrl} target='_blank' rel='noopener noreferrer'>
+          쇼핑몰 방문
+        </a>
+      </div>
 
-        {mainProducts.map((product, index) => (
-          <div className={styles.card} key={index}>
-            <p className={styles.label}>상품 대표 이미지</p>
-            <p className={styles.hint}>상품 이미지를 첨부해주세요</p>
-            <p className={styles.label}>상품 이름</p>
-            <input
-              type="text"
-              className={styles.input}
-              value={product.name}
-              onChange={(e) => handleMainProductChange(index, 'name', e.target.value)}
-              placeholder="상품 이름을 입력해 주세요."
-            />
-            <p className={styles.label}>상품 가격</p>
-            <input
-              type="text"
-              className={styles.input}
-              value={product.price}
-              onChange={(e) => handleMainProductChange(index, 'price', e.target.value)}
-              placeholder="원화로 표기해 주세요."
-            />
-            <button className={styles.iconButton}>
-              <img src="/images/fileadder.png" alt="파일 첨부" />
-            </button>
+      <h2>제품</h2>
+      <div>
+        {data.products.map((product) => (
+          <div key={product.id}>
+            <img src={product.imageUrl} alt={product.name} width={100} />
+            <p>제품 이름: {product.name}</p>
+            <p>가격: {product.price} 원</p>
           </div>
         ))}
-      </section>
-
-      <section className={styles.section}>
-        <h2 className={styles.sectionTitle}>내 쇼핑몰</h2>
-        <div className={styles.card}>
-          <p className={styles.label}>상품 대표 이미지</p>
-          <p className={styles.hint}>상품 이미지를 첨부해주세요</p>
-          <p className={styles.label}>이름</p>
-          <input
-            type="text"
-            className={styles.input}
-            value={shopInfo.name}
-            onChange={(e) => handleShopInfoChange('name', e.target.value)}
-            placeholder="표시하고 싶은 이름을 적어 주세요"
-          />
-          <p className={styles.label}>Url</p>
-          <input
-            type="text"
-            className={styles.input}
-            value={shopInfo.url}
-            onChange={(e) => handleShopInfoChange('url', e.target.value)}
-            placeholder="Url을 입력해주세요"
-          />
-          <p className={styles.label}>유저 ID</p>
-          <input
-            type="text"
-            className={styles.input}
-            value={shopInfo.userId}
-            onChange={(e) => handleShopInfoChange('userId', e.target.value)}
-            placeholder="유저 ID를 입력해주세요"
-          />
-          <p className={styles.label}>비밀번호</p>
-          <input
-            type="password"
-            className={styles.input}
-            value={shopInfo.password}
-            onChange={(e) => handleShopInfoChange('password', e.target.value)}
-            placeholder="비밀번호를 입력해주세요."
-          />
-          <>
-            <input
-              type="file"
-              accept="image/*"
-              style={{ display: 'none' }}
-              id={`file-input-${index}`}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                const newProducts = [...mainProducts];
-                newProducts[index].image = file;
-                setMainProducts(newProducts);
-              }}
-            />
-            <label htmlFor={`file-input-${index}`} className={styles.iconButton}>
-              <img src="/images/fileadder.png" alt="파일 첨부" />
-            </label>
-          </>
-        </div>
-      </section>
-
-      <div className={styles.submitWrapper}>
-        <button className={styles.iconButton} onClick={handleSubmit}>
-          <img src="/images/btn.png" alt="생성하기" />
-        </button>
       </div>
     </div>
   );
-};
+}
 
 export default LinkDetailPage;
