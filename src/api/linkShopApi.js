@@ -1,4 +1,4 @@
-// src/api/linkShopApi.js
+//src/api/linkShopApi.js
 const teamId = '15-8'; // teamId를 고정값으로 설정
 const baseUrl = `https://linkshop-api.vercel.app/${teamId}/linkshops`;
 
@@ -14,12 +14,25 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   if (!response.ok) {
     throw new Error('상세 정보를 불러오지 못했습니다.');
   }
-
-  return response.json();
 };
 
-export const getLinkShopList = async (keyword, orderBy) => {
-  const response = await fetch(`${baseUrl}?keyword=${keyword}&orderBy=${orderBy}`);
+export const getLinkShopList = async ({ cursor = null, keyword = '', orderBy = '' }) => {
+  const query = new URLSearchParams();
+
+  if (cursor) query.append('cursor', cursor); // 🔁 무한스크롤용
+  if (keyword) query.append('keyword', keyword); // 🔍 검색어
+  if (orderBy) query.append('orderBy', orderBy); // 🧭 정렬 조건
+
+  const response = await fetch(`${baseUrl}?${query.toString()}`);
+
+  if (!response.ok) {
+    throw new Error('링크샵 목록을 불러오지 못했습니다.');
+  }
+
   const data = await response.json();
-  return data.list;
+
+  return {
+    list: data.list,
+    nextCursor: data.nextCursor, // 무한스크롤에서 다음 요청 시 사용
+  };
 };
