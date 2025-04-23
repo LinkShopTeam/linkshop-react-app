@@ -21,7 +21,7 @@ export default function AppMain() {
 
   useEffect(() => {
     fetchInitialShops();
-  }, []);
+  }, [orderBy]);
 
   const handleLogoClick = () => {
     navigate('/list');
@@ -35,7 +35,7 @@ export default function AppMain() {
   const fetchInitialShops = async (customKeyword = keyword) => {
     try {
       setIsFetching(true);
-      const res = await getLinkShopList({ keyword: customKeyword });
+      const res = await getLinkShopList({ keyword: customKeyword, orderBy });
       setLinkShopList(res.list);
       setCursor(res.nextCursor);
       setHasNextPage(res.nextCursor !== null);
