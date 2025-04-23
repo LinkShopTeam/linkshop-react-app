@@ -18,8 +18,8 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   return response.json();
 };
 
-export const getLinkShopList = async (keyword) => {
-  const response = await fetch(`${baseUrl}?keyword=${keyword}`);
+export const getLinkShopList = async (keyword, orderBy) => {
+  const response = await fetch(`${baseUrl}?keyword=${keyword}&orderBy=${orderBy}`);
   const data = await response.json();
   return data.list;
 };
