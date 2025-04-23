@@ -23,3 +23,45 @@ export const getLinkShopList = async (keyword, orderBy) => {
   const data = await response.json();
   return data.list;
 };
+
+export const createLinkShop = async ({ shopInfo, mainProducts }) => {
+  const formData = new FormData();
+
+  // Add text fields
+  formData.append('shopInfo', JSON.stringify({
+    name: shopInfo.name,
+    url: shopInfo.url,
+    userId: shopInfo.userId,
+    password: shopInfo.password,
+  }));
+
+  // Add shop image if exists
+  if (shopInfo.image) {
+    formData.append('shopImage', shopInfo.image);
+  }
+
+  // Add each product as JSON
+  mainProducts.forEach((product, index) => {
+    formData.append(`mainProducts[${index}]`, JSON.stringify({
+      name: product.name,
+      price: product.price
+    }));
+
+    if (product.image) {
+      formData.append(`mainProductImages[${index}]`, product.image);
+    }
+  });
+
+  const response = await fetch(baseUrl, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('API Error:', error);
+    throw new Error('링크샵 생성에 실패했습니다.');
+  }
+
+  return await response.json();
+};
