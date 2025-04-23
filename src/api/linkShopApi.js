@@ -14,6 +14,7 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   if (!response.ok) {
     throw new Error('상세 정보를 불러오지 못했습니다.');
   }
+  return response.json();
 };
 
 export const getLinkShopList = async ({ cursor = null, keyword = '', orderBy = '' }) => {
