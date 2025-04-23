@@ -4,14 +4,9 @@ import styles from '../styles/components/LinkCard.module.css';
 import ProductList from './ProductList';
 import React from 'react';
 
-<<<<<<< HEAD
 const LinkCard = React.forwardRef(({ data }, ref) => {
-  const { name, userId, likes, products, shop } = data;
-
-=======
-const LinkCard = ({ data }) => {
   const { name, userId, likes, products, shop, id } = data;
->>>>>>> ed8aaefa8235daf27f17b45946c2abd945c6f368
+
   const navigate = useNavigate();
 
   const handleClick = () => {
