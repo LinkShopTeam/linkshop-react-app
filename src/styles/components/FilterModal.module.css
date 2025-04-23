@@ -13,28 +13,52 @@
 
 .modal {
   background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 260px;
+  padding: 40px 20px;
+  border-radius: 16px;
+  width: 375px;
+  height: 250px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .title {
   display: flex;
   justify-content: space-between;
-  font-weight: bold;
-  font-size: 18px;
-  margin-bottom: 15px;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding-top: 10px;
 }
 
 .option {
   border-top: 1px solid #eee;
-  padding: 10px 0;
+  padding: 24px 0;
   display: flex;
   justify-content: space-between;
   cursor: pointer;
 }
 
+.option span {
+  font-size: 16px;
+  color: ;
+}
+
 .selected {
   color: red;
   font-weight: bold;
+}
+/* 버튼 X 모양 수정 */
+.button {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  width: 23px;
+  height: 23px;
+  font-weight: bold;
+  opacity: 0.8;
+}
+
+/* x버튼에 마우스 포인터 가져가면 진하게 */
+.button:hover {
+  opacity: 1;
 }

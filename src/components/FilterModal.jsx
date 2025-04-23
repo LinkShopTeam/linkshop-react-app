@@ -23,7 +23,9 @@ export default function FilterModal({ orderBy, setOrderBy, setShowFilter }) {
 
         <div className={styles.title}>
           정렬
-          <button onClick={() => setShowFilter(false)}>x</button>
+          <button className={styles.button} onClick={() => setShowFilter(false)}>
+            <img src='/public/images/close.png' />
+          </button>
         </div>
 
         {/* 이제 옵션을 하나씩 보여준다 */}
