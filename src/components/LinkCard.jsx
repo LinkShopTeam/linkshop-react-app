@@ -5,6 +5,7 @@ import ProductList from './ProductList';
 
 const LinkCard = ({ data }) => {
   const { name, userId, likes, products, shop, id } = data;
+
   const navigate = useNavigate();
 
   const handleClick = () => {
