@@ -14,10 +14,11 @@ const useInfiniteScroll = ({ fetchNextPage, hasNextPage, isFetching }) => {
   // inView가 true이고(요소가 보이고), 다음 페이지가 있고, 현재 로딩 중이 아닐 때
   React.useEffect(() => {
     if (inView && hasNextPage && !isFetching) {
+      console.log('fetchMoreShops() 호출 확인용입니다!');
       fetchNextPage(); // 다음 페이지 요청
     }
   }, [inView, hasNextPage, isFetching, fetchNextPage]);
-  // console.log('fetchMoreShops() 호출!');
+
   return { ref };
 };
 

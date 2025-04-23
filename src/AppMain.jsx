@@ -138,7 +138,9 @@ export default function AppMain() {
             <SearchNull />
           </div>
         )}
-
+        {/* 무한스크롤 트리거 역할 */}
+        {/* hasNextPage가 true일때만 렌더링됨 (= 더 불러올 데이터가 있을때만) */}
+        {/* useInfiniteScroll 훅에서 fetchMoreShops(다음페이지요청) 실행됨 */}
         {hasNextPage && <div ref={infiniteScrollRef} style={{ height: '20px' }} />}
       </main>
     </>
