@@ -2,8 +2,9 @@
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/components/LinkCard.module.css';
 import ProductList from './ProductList';
+import React from 'react';
 
-const LinkCard = ({ data }) => {
+const LinkCard = React.forwardRef(({ data }, ref) => {
   const { name, userId, likes, products, shop, id } = data;
 
   const navigate = useNavigate();
@@ -13,19 +14,25 @@ const LinkCard = ({ data }) => {
   };
 
   return (
-    <div className={styles.container} onClick={handleClick}>
+    <div className={styles.container} ref={ref} onClick={handleClick}>
       <div className={styles.header}>
-        <img src={shop.imageUrl} alt='store icon' className={styles.avatar} />
+        <img
+          src={shop.imageUrl !== 'https://example.com/...' ? shop.imageUrl : '/images/profile1.png'}
+          alt='store icon'
+          className={styles.avatar}
+        />
         <div>
           <h2 className={styles.storeName}>{name}</h2>
           <p className={styles.handle}>@{userId}</p>
         </div>
-        <div className={styles.likes}>❤️ {likes}</div>
+        <div className={styles.likes}>
+          <img src='/icons/status=fill.png' alt='heart' className={styles.heartIcon} /> {likes}
+        </div>
       </div>
       <p className={styles.productCount}>대표 상품 {products.length}</p>
       <ProductList products={products} />
     </div>
   );
-};
+});
 
 export default LinkCard;

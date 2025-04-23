@@ -3,43 +3,76 @@ import { useNavigate } from 'react-router-dom';
 import { getLinkShopList } from './api/linkShopApi';
 import FilterModal from './components/FilterModal';
 import LinkCard from './components/LinkCard';
-import SearchNull from './components/SearchNull';
+import useInfiniteScroll from './hooks/useInfiniteScroll';
 import styles from './styles/AppMain.module.css';
 
 export default function AppMain() {
-  // 모달 열고 닫는 상태
-  const [showFilter, setShowFilter] = useState(false);
-  // 정렬 기준 상태 (초기값: recent = 최신순)
-  const [orderBy, setOrderBy] = useState('recent');
-
   // useState 훅을 사용하여 상태 관리
   const [linkShoplist, setLinkShopList] = useState([]);
-
-  // 검색어를 저장할 상태 변수
   const [keyword, setKeyword] = useState('');
-
-  // 검색 결과를 보여줄지 여부를 저장할 상태 변수
-  // hasSearched는 검색어가 입력되었는지 여부를 나타냄
   const [hasSearched, setHasSearched] = useState(false);
+  const [cursor, setCursor] = useState(null);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [orderBy, setOrderBy] = useState('recent'); // 기본 정렬 기준
 
-  // 리액트 라우터의 navigate 함수 가져오기
   const navigate = useNavigate();
 
-  // 로고 클릭 → /list로 이동
+  useEffect(() => {
+    fetchInitialShops();
+  }, []);
+
   const handleLogoClick = () => {
     navigate('/list');
   };
 
-  // 생성하기 버튼 클릭 → /linkpost로 이동
   const handleCreateClick = () => {
     navigate('/linkpost');
   };
 
+  // 처음 데이터 요청(초기 로딩 또는 검색 시 사용됨)
+  const fetchInitialShops = async (customKeyword = keyword) => {
+    try {
+      setIsFetching(true);
+      const res = await getLinkShopList({ keyword: customKeyword });
+      setLinkShopList(res.list);
+      setCursor(res.nextCursor);
+      setHasNextPage(res.nextCursor !== null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  // 무한스크롤 감지될 때 다음 페이지 로드
+  const fetchMoreShops = async () => {
+    if (!hasNextPage || isFetching) return; //이미 로딩 중이거나 끝이라면 중단
+    try {
+      setIsFetching(true);
+      const res = await getLinkShopList({ cursor, keyword });
+      setLinkShopList((prev) => [...prev, ...res.list]); // 기존 리스트에 추가
+      setCursor(res.nextCursor); //커서 업데이트
+      setHasNextPage(res.nextCursor !== null); // 다음 페이지 여부 업데이트
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+  // 무한스크롤 훅 사용: 감지되면 fetchMoreShops 자동 실행
+  const { ref: infiniteScrollRef } = useInfiniteScroll({
+    fetchNextPage: fetchMoreShops,
+    hasNextPage,
+    isFetching,
+  });
+
   // 검색 결과를 가져오는 함수
   // keyword가 바뀔 때마다 호출되도록 설정
   const handleLinkShopList = async () => {
-    const result = await getLinkShopList(keyword, orderBy);
-    setLinkShopList(result);
+    const result = await getLinkShopList({ keyword });
+    setLinkShopList(result.list); // 이렇게 수정!!
   };
 
   // 검색어가 바뀔 때마다 getLinkShopList 호출
@@ -54,22 +87,25 @@ export default function AppMain() {
     const term = keyword.trim().toLowerCase();
     if (!term) return; // 빈 문자열이면 검색 중단
 
-    setHasSearched(true); // 검색 실행 플래그 설정
+    setHasSearched(true);
+    setLinkShopList([]); // 기존 리스트 초기화
+    setCursor(null); // 커서 초기화
+    setHasNextPage(true); //  페이징 초기화
+    await fetchInitialShops(term); // 검색어로 다시 fetch
 
     const result = await getLinkShopList(term); // API로 검색 결과 가져오기
     const filtered = result.filter((shop) => shop.name.toLowerCase().includes(term)); //API가 부분 매칭을 지원하지 않을 경우, 클라이언트 필터링
 
+    setKeyword(term);
+
     // 필터링된 결과를 상태에 저장
     setLinkShopList(filtered);
-
-    // 검색 후에도 input 창에 키워드를 유지
-    setKeyword(term);
   };
 
   // 컴포넌트가 마운트될 때 handleLinkShopList 호출
   useEffect(() => {
     handleLinkShopList();
-  }, [orderBy, keyword]);
+  }, []);
 
   return (
     <>
@@ -132,6 +168,10 @@ export default function AppMain() {
             <SearchNull />
           </div>
         )}
+        {/* 무한스크롤 트리거 역할 */}
+        {/* hasNextPage가 true일때만 렌더링됨 (= 더 불러올 데이터가 있을때만) */}
+        {/* useInfiniteScroll 훅에서 fetchMoreShops(다음페이지요청) 실행됨 */}
+        {hasNextPage && <div ref={infiniteScrollRef} style={{ height: '20px' }} />}
       </main>
     </>
   );
