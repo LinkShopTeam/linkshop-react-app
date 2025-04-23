@@ -1,4 +1,4 @@
-// src/api/linkShopApi.js
+//src/api/linkShopApi.js
 const teamId = '15-8'; // teamId를 고정값으로 설정
 const baseUrl = `https://linkshop-api.vercel.app/${teamId}/linkshops`;
 
@@ -14,8 +14,6 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   if (!response.ok) {
     throw new Error('상세 정보를 불러오지 못했습니다.');
   }
-
-  return response.json();
 };
 
 // 커서 기반 링크샵 목록 API

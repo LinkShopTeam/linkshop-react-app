@@ -2,14 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchLinkShopDetail } from '../../api/linkShopApi';
 import { Spinner } from '../../components/Spinner';
+import ProductImage from '../../components/ProductImage';
 import styles from './LinkDetailPage.module.css';
 import Shopbox from './Shopbox';
+import { useNavigate } from 'react-router-dom';
 
 function LinkDetailPage() {
   const { linkshopId } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/list');
+  };
 
   // 컴포넌트가 마운트될 때 API 호출
   useEffect(() => {
@@ -39,6 +47,10 @@ function LinkDetailPage() {
   // 데이터가 정상적으로 로드되었을 때
   return (
     <div className={styles.pageWrapper}>
+      <div className={styles.back} onClick={handleClick}>
+        <img src='/icons/back.png' alt='back' width={16} height={16} />
+        돌아가기
+      </div>
       <Shopbox
         likes={data.likes}
         img={data.shop.imageUrl}
@@ -48,28 +60,28 @@ function LinkDetailPage() {
         urlName={data.shop.urlName}
         href={data.shop.shopUrl}
       />
-      <h1>{data.name}</h1>
-      <p>사용자 ID: {data.userId}</p>
-      <p>좋아요 수: {data.likes}</p>
 
-      <h2>쇼핑몰 정보</h2>
-      <div>
-        <img src={data.shop.imageUrl} alt={data.shop.urlName} width={100} />
-        <p>쇼핑몰 이름: {data.shop.urlName}</p>
-        <a href={data.shop.shopUrl} target='_blank' rel='noopener noreferrer'>
-          쇼핑몰 방문
-        </a>
-      </div>
-
-      <h2>제품</h2>
-      <div>
-        {data.products.map((product) => (
-          <div key={product.id}>
-            <img src={product.imageUrl} alt={product.name} width={100} />
-            <p>제품 이름: {product.name}</p>
-            <p>가격: {product.price} 원</p>
-          </div>
-        ))}
+      <div className={styles.productsWrapper}>
+        <div className={styles.productsTitle}>대표 상품</div>
+        <div className={styles.products}>
+          {data.products.map((product) => (
+            <div className={styles.product} key={product.id}>
+              {/* 이미지 (없을 경우 회색 배경) */}
+              <ProductImage
+                className={styles.productImage}
+                imageUrl={product.imageUrl}
+                alt={product.name}
+                width={95}
+                height={95}
+              />
+              <div className={styles.productInfo}>
+                {/* 상품명 */}
+                <p className={styles.productName}>{product.name}</p>
+                <p className={styles.productPrice}>₩{product.price.toLocaleString()}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

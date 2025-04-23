@@ -1,5 +1,5 @@
 /* 헤더 영역 */
-* {
+:global(*) {
   font-family: 'Pretendard Variable', sans-serif;
 }
 .header {

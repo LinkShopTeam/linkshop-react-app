@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './styles/AppMain.css';
-import { useEffect, useState } from 'react';
-import SearchNull from './components/SearchNull';
 import { getLinkShopList } from './api/linkShopApi';
+import FilterModal from './components/FilterModal';
 import LinkCard from './components/LinkCard';
 import useInfiniteScroll from './hooks/useInfiniteScroll';
+import styles from './styles/AppMain.module.css';
 
 export default function AppMain() {
+  // useState 훅을 사용하여 상태 관리
   const [linkShoplist, setLinkShopList] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [cursor, setCursor] = useState(null);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isFetching, setIsFetching] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [orderBy, setOrderBy] = useState('recent'); // 기본 정렬 기준
 
   const navigate = useNavigate();
 
@@ -66,8 +68,15 @@ export default function AppMain() {
     isFetching,
   });
 
-  // 검색어 입력 시 상태 업데이트
-  const handleKewordChange = (event) => {
+  // 검색 결과를 가져오는 함수
+  // keyword가 바뀔 때마다 호출되도록 설정
+  const handleLinkShopList = async () => {
+    const result = await getLinkShopList({ keyword });
+    setLinkShopList(result.list); // 이렇게 수정!!
+  };
+
+  // 검색어가 바뀔 때마다 getLinkShopList 호출
+  const handleKeywordChange = (event) => {
     setKeyword(event.target.value);
   };
 
@@ -83,19 +92,32 @@ export default function AppMain() {
     setCursor(null); // 커서 초기화
     setHasNextPage(true); //  페이징 초기화
     await fetchInitialShops(term); // 검색어로 다시 fetch
+
+    const result = await getLinkShopList(term); // API로 검색 결과 가져오기
+    const filtered = result.filter((shop) => shop.name.toLowerCase().includes(term)); //API가 부분 매칭을 지원하지 않을 경우, 클라이언트 필터링
+
+    setKeyword(term);
+
+    // 필터링된 결과를 상태에 저장
+    setLinkShopList(filtered);
   };
+
+  // 컴포넌트가 마운트될 때 handleLinkShopList 호출
+  useEffect(() => {
+    handleLinkShopList();
+  }, []);
 
   return (
     <>
       {/* 헤더 영역: 로고와 생성하기 버튼 */}
-      <div className='header'>
+      <div className={styles.header}>
         {/* 로고 클릭 시 /list 이동 */}
-        <h1 className='logo' onClick={handleLogoClick}>
+        <h1 className={styles.logo} onClick={handleLogoClick}>
           LINK SHOP
         </h1>
         {/* 생성하기 버튼 클릭시 /linkpost로 이동 */}
         <h1>
-          <button className='create-button' onClick={handleCreateClick}>
+          <button className={styles['create-button']} onClick={handleCreateClick}>
             생성하기
           </button>
         </h1>
@@ -103,13 +125,13 @@ export default function AppMain() {
 
       {/* 검색 폼 */}
       <form onSubmit={handleSearchSubmit}>
-        <div className='search-box'>
-          <img className='search' src='/images/search.svg' />
+        <div className={styles['search-box']}>
+          <img className={styles.search} src='/images/search.svg' alt='검색 아이콘' />
           <input
             name='keyword'
             value={keyword}
-            onChange={handleKewordChange}
-            className='input'
+            onChange={handleKeywordChange}
+            className={styles.input}
             type='text'
             placeholder='샵 이름으로 검색해 보세요.'
           />
@@ -117,15 +139,23 @@ export default function AppMain() {
       </form>
 
       {/* 상세 필터 UI (추가 기능 가능) */}
-      <div className='filter'>
-        <span className='filter-detail'>
+      <div className={styles.filter}>
+        <span
+          className={styles['filter-detail']}
+          onClick={() => setShowFilter(true)} // 클릭하면 모달 오픈
+        >
           상세필터
-          <img className='filter-button' src='/images/filter.png' />
+          <img className={styles['filter-button']} src='/images/filter.png' alt='필터 아이콘' />
         </span>
       </div>
 
+      {/* 상세필터모달 렌더링 */}
+      {showFilter && (
+        <FilterModal orderBy={orderBy} setOrderBy={setOrderBy} setShowFilter={setShowFilter} />
+      )}
+
       {/* 메인 컨텐츠: 검색 전/후, 결과 유무에 따른 조건부 렌더링 */}
-      <main className='main-container'>
+      <main className={styles['main-container']}>
         {!hasSearched ? (
           // 검색 전: 전체 리스트
           linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
@@ -134,7 +164,7 @@ export default function AppMain() {
           linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
         ) : (
           // 검색 후 결과 없음
-          <div className='search-null'>
+          <div className={styles['search-null']}>
             <SearchNull />
           </div>
         )}
