@@ -14,6 +14,7 @@ export const fetchLinkShopDetail = async (linkShopId) => {
   if (!response.ok) {
     throw new Error('상세 정보를 불러오지 못했습니다.');
   }
+
   return response.json();
 };
 
@@ -42,12 +43,15 @@ export const createLinkShop = async ({ shopInfo, mainProducts }) => {
   const formData = new FormData();
 
   // Add text fields
-  formData.append('shopInfo', JSON.stringify({
-    name: shopInfo.name,
-    url: shopInfo.url,
-    userId: shopInfo.userId,
-    password: shopInfo.password,
-  }));
+  formData.append(
+    'shopInfo',
+    JSON.stringify({
+      name: shopInfo.name,
+      url: shopInfo.url,
+      userId: shopInfo.userId,
+      password: shopInfo.password,
+    }),
+  );
 
   // Add shop image if exists
   if (shopInfo.image) {
@@ -56,10 +60,13 @@ export const createLinkShop = async ({ shopInfo, mainProducts }) => {
 
   // Add each product as JSON
   mainProducts.forEach((product, index) => {
-    formData.append(`mainProducts[${index}]`, JSON.stringify({
-      name: product.name,
-      price: product.price
-    }));
+    formData.append(
+      `mainProducts[${index}]`,
+      JSON.stringify({
+        name: product.name,
+        price: product.price,
+      }),
+    );
 
     if (product.image) {
       formData.append(`mainProductImages[${index}]`, product.image);

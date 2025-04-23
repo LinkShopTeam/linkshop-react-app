@@ -5,6 +5,7 @@ import FilterModal from './components/FilterModal';
 import LinkCard from './components/LinkCard';
 import useInfiniteScroll from './hooks/useInfiniteScroll';
 import styles from './styles/AppMain.module.css';
+import SearchNull from './components/SearchNull';
 
 export default function AppMain() {
   // useState 훅을 사용하여 상태 관리
@@ -80,26 +81,54 @@ export default function AppMain() {
     setKeyword(event.target.value);
   };
 
+  // 검색어 전처리 함수: 공백 제거 + 소문자 변환
+  const validateKeyword = (raw) => {
+    return raw.trim().toLowerCase();
+  };
+
+  // 검색어가 비어있는지 확인
+  const isKeywordEmpty = (term) => {
+    return term.length === 0;
+  };
+
+  // 검색 전 상태 초기화: 리스트, 커서, 로딩 등 리셋
+  const resetSearchState = () => {
+    setLinkShopList([]);
+    setCursor(null);
+    setHasNextPage(true);
+    setIsFetching(true);
+  };
+
+  // 서버에서 데이터 받아와서 상태 설정
+  const fetchAndSetLinkList = async (term) => {
+    try {
+      const result = await getLinkShopList({ keyword: term }); // API로 검색 결과 가져오기
+      setLinkShopList(result.list);
+      setCursor(result.nextCursor);
+      setHasNextPage(result.nextCursor !== null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
   // 검색 폼 제출 처리
   const handleSearchSubmit = async (event) => {
     event.preventDefault(); // 폼의 기본 동작(새로고침) 방지
 
-    const term = keyword.trim().toLowerCase();
-    if (!term) return; // 빈 문자열이면 검색 중단
+    const term = validateKeyword(keyword); // // 검색어 전처리
 
-    setHasSearched(true);
-    setLinkShopList([]); // 기존 리스트 초기화
-    setCursor(null); // 커서 초기화
-    setHasNextPage(true); //  페이징 초기화
-    await fetchInitialShops(term); // 검색어로 다시 fetch
+    if (isKeywordEmpty(term)) {
+      // 검색어가 비어 있다면
+      setHasSearched(false); // 검색하지 않은 상태로 표시
+      await fetchInitialShops(''); // 전체 목록 요청
+      return; // 빈 문자열이면 검색 중단
+    }
 
-    const result = await getLinkShopList(term); // API로 검색 결과 가져오기
-    const filtered = result.filter((shop) => shop.name.toLowerCase().includes(term)); //API가 부분 매칭을 지원하지 않을 경우, 클라이언트 필터링
-
-    setKeyword(term);
-
-    // 필터링된 결과를 상태에 저장
-    setLinkShopList(filtered);
+    setHasSearched(true); // 검색 실행됨 표시
+    resetSearchState(); // 상태 초기화
+    await fetchAndSetLinkList(term); // 검색 결과 요청
   };
 
   // 컴포넌트가 마운트될 때 handleLinkShopList 호출
@@ -168,6 +197,7 @@ export default function AppMain() {
             <SearchNull />
           </div>
         )}
+
         {/* 무한스크롤 트리거 역할 */}
         {/* hasNextPage가 true일때만 렌더링됨 (= 더 불러올 데이터가 있을때만) */}
         {/* useInfiniteScroll 훅에서 fetchMoreShops(다음페이지요청) 실행됨 */}
