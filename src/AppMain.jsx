@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLinkShopList } from './api/linkShopApi';
 import FilterModal from './components/FilterModal';
-import LinkCard from './components/LinkCard';
+import LinkCard from './components/LinkCard/LinkCard';
 import useInfiniteScroll from './hooks/useInfiniteScroll';
 import styles from './styles/AppMain.module.css';
 import SearchNull from './components/SearchNull/SearchNull';

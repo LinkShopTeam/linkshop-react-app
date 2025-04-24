@@ -1,7 +1,7 @@
 // LinkCard.jsx
 import { useNavigate } from 'react-router-dom';
-import styles from '../styles/components/LinkCard.module.css';
-import ProductList from './ProductList';
+import styles from './LinkCard.module.css';
+import ProductList from '../ProductList/ProductList';
 import React from 'react';
 
 const LinkCard = React.forwardRef(({ data }, ref) => {
