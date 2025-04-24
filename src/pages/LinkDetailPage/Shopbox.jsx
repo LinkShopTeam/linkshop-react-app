@@ -1,9 +1,22 @@
 import React, { useState } from 'react';
 import styles from './ShopBox.module.css';
 import profile1 from '/images/profile1.png';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import ConfirmDeleteModal from '../../components/modal/ConfirmDeleteModal';
+import ConfirmUpdateModal from '../../components/modal/ConfirmUpdateModal';
+import {
+  deleteLinkShop,
+  fetchLinkShopDetail,
+  validateLinkShopPassword,
+} from '../../api/linkShopApi';
 
 export default function ShopBox({ likes, img, alt, name, userId, href }) {
+  const navigate = useNavigate();
+
   const [imgSrc, setImgSrc] = useState(img);
+
+  const { linkshopId } = useParams();
 
   const handleError = () => {
     setImgSrc(profile1); // 이미지 깨지면 교체
@@ -24,8 +37,65 @@ export default function ShopBox({ likes, img, alt, name, userId, href }) {
     setIsDropdownVisible(!isDropdownVisible); // 드롭다운 토글
   };
 
+  // 수정하기 모달
+  const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+
+  const handleUpdateClick = () => {
+    setShowUpdateConfirm(true);
+  };
+
+  const handleUpdateConfirm = async (password) => {
+    try {
+      // 현재 데이터를 먼저 가져옴
+      const existingData = await fetchLinkShopDetail(linkshopId);
+
+      // no-op PUT 요청으로 비밀번호 검증
+      await validateLinkShopPassword(linkshopId, password, existingData);
+
+      // 비밀번호 유효하면 수정 페이지로 이동
+      navigate(`/edit/${linkshopId}`, {
+        state: { password },
+      });
+
+      setShowUpdateConfirm(false);
+    } catch (err) {
+      alert(err.message); // 비밀번호 틀림 or 기타 오류
+    }
+  };
+
+  // 삭제하기 모달
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async (password) => {
+    try {
+      await deleteLinkShop(linkshopId, password);
+      alert('삭제되었습니다.');
+      navigate('/list'); // 리스트로 이동
+    } catch (err) {
+      alert(err.message); // 실패 메시지 출력
+    }
+  };
+
   return (
     <div className={styles.shopBox}>
+      {showDeleteConfirm && (
+        <ConfirmDeleteModal
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDeleteConfirm}
+        />
+      )}
+
+      {showUpdateConfirm && (
+        <ConfirmUpdateModal
+          onClose={() => setShowUpdateConfirm(false)}
+          onConfirm={handleUpdateConfirm}
+        />
+      )}
+
       <div className={styles.icons}>
         <div className={styles.likes}>
           <img src='/icons/status=fill.png' className={styles.icon}></img>
@@ -41,10 +111,12 @@ export default function ShopBox({ likes, img, alt, name, userId, href }) {
             {/* 드롭다운 메뉴 */}
             {isDropdownVisible && (
               <div className={styles.dropdown}>
-                <button className={styles.dropdownItem}>수정하기</button>
-                {/* TODO: 수정하기 구현 */}
-                <button className={styles.dropdownItemBottom}>삭제하기</button>
-                {/* TODO: 삭제하기 구현 */}
+                <button className={styles.dropdownItem} onClick={handleUpdateClick}>
+                  수정하기
+                </button>
+                <button className={styles.dropdownItemBottom} onClick={handleDeleteClick}>
+                  삭제하기
+                </button>
               </div>
             )}
           </div>

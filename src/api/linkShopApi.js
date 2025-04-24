@@ -86,3 +86,63 @@ export const createLinkShop = async ({ shopInfo, mainProducts }) => {
 
   return await response.json();
 };
+
+export const deleteLinkShop = async (linkShopId, currentPassword) => {
+  const response = await fetch(`${baseUrl}/${linkShopId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ currentPassword }),
+  });
+
+  if (response.status === 404) {
+    throw new Error('존재하지 않는 링크샵입니다.');
+  }
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('삭제 실패:', errorText);
+    throw new Error('링크샵 삭제에 실패했습니다.');
+  }
+
+  return await response.json(); // 성공 메시지 반환
+};
+
+// 수정하기 전 비밀번호 확인
+export const validateLinkShopPassword = async (linkShopId, password, existingData) => {
+  const response = await fetch(`${baseUrl}/${linkShopId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      currentPassword: password,
+      shop: {
+        imageUrl: existingData.shop.imageUrl,
+        urlName: existingData.shop.urlName,
+        shopUrl: existingData.shop.shopUrl,
+      },
+      userId: existingData.userId,
+      name: existingData.name,
+      products: existingData.products.map((p) => ({
+        name: p.name,
+        price: p.price,
+        imageUrl: p.imageUrl,
+      })),
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json(); // JSON 응답 파싱
+
+    // details?.name?.message 에 안전하게 접근
+    const customMessage =
+      errorData?.details?.name?.message || '비밀번호 확인 중 오류가 발생했습니다.';
+
+    // console.error('🔴 PUT 요청 실패 내용:', errorData); // 디버깅용 출력
+    throw new Error(customMessage); // 에러 메시지 던짐
+  }
+
+  return await response.json(); // 성공 시 반환값
+};
