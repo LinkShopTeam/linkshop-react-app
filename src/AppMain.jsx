@@ -5,7 +5,7 @@ import FilterModal from './components/FilterModal';
 import LinkCard from './components/LinkCard';
 import useInfiniteScroll from './hooks/useInfiniteScroll';
 import styles from './styles/AppMain.module.css';
-import SearchNull from './components/SearchNull';
+import SearchNull from './components/SearchNull/SearchNull';
 
 export default function AppMain() {
   // useState 훅을 사용하여 상태 관리
