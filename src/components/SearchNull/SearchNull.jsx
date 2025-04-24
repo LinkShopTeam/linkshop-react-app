@@ -1,4 +1,4 @@
-import styles from '../styles/components/SearchNull.module.css';
+import styles from './SearchNull.module.css';
 
 const SearchNull = () => {
   return (
