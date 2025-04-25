@@ -25,8 +25,15 @@ export default function AppMain() {
     fetchInitialShops();
   }, [orderBy]);
 
+  // 검색을 한 적이 없는 상태로 되돌림 → 조건부 렌더링을 위한 상태 초기화
   const handleLogoClick = () => {
-    navigate('/list');
+    setHasSearched(false); // 검색 상태 초기화
+    setKeyword(''); // 검색어 초기화
+    setLinkShopList([]); // 리스트 초기화 (선택)
+    setCursor(null); // 커서 초기화
+    setHasNextPage(true); // 페이지 더 있음으로 리셋
+    fetchInitialShops(''); // 전체 리스트 다시 가져오기
+    navigate('/list'); // /list 경로로 페이지 이동 (라우팅)
   };
 
   const handleCreateClick = () => {
@@ -63,6 +70,7 @@ export default function AppMain() {
       setIsFetching(false);
     }
   };
+
   // 무한스크롤 훅 사용: 감지되면 fetchMoreShops 자동 실행
   const { ref: infiniteScrollRef } = useInfiniteScroll({
     fetchNextPage: fetchMoreShops,
