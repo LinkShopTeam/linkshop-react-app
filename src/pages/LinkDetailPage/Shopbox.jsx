@@ -1,132 +1,112 @@
 import React, { useState } from 'react';
-import styles from './ShopBox.module.css';
+import { useNavigate, useParams } from 'react-router-dom';
+import styles from './Shopbox.module.css';
 import profile1 from '/images/profile1.png';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import ConfirmDeleteModal from '../../components/modal/ConfirmDeleteModal';
-import ConfirmUpdateModal from '../../components/modal/ConfirmUpdateModal';
-import {
-  deleteLinkShop,
-  fetchLinkShopDetail,
-  validateLinkShopPassword,
-} from '../../api/linkShopApi';
 
-export default function ShopBox({ likes, img, alt, name, userId, href }) {
-  const navigate = useNavigate();
-
+export default function Shopbox({ likes, img, alt, name, userId, urlName, href }) {
   const [imgSrc, setImgSrc] = useState(img);
-
-  const { linkshopId } = useParams();
-
-  const handleError = () => {
-    setImgSrc(profile1); // 이미지 깨지면 교체
-  };
-
-  // 공유하기
-  const handleCopyUrl = async () => {
-    try {
-      await navigator.clipboard.writeText(href);
-      alert('링크가 클립보드에 복사되었습니다.');
-    } catch (err) {
-      console.error('복사 실패:', err);
-    }
-  };
-
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const toggleDropdown = () => {
-    setIsDropdownVisible(!isDropdownVisible); // 드롭다운 토글
-  };
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [inputPassword, setInputPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
-  // 수정하기 모달
-  const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+  const navigate = useNavigate();
+  const { linkshopId } = useParams(); // assumes route like /link/:linkshopId
 
-  const handleUpdateClick = () => {
-    setShowUpdateConfirm(true);
-  };
+  const handleError = () => setImgSrc(profile1);
+  const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
 
-  const handleUpdateConfirm = async (password) => {
+  const handlePasswordConfirm = async () => {
     try {
-      // 현재 데이터를 먼저 가져옴
-      const existingData = await fetchLinkShopDetail(linkshopId);
-
-      // no-op PUT 요청으로 비밀번호 검증
-      await validateLinkShopPassword(linkshopId, password, existingData);
-
-      // 비밀번호 유효하면 수정 페이지로 이동
-      navigate(`/edit/${linkshopId}`, {
-        state: { password },
+      const res = await fetch(`https://linkshop-api.vercel.app/15-8/linkshops/${linkshopId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: inputPassword,
+          name: name,
+          userId: userId,
+          products: [],
+          shop: {
+            shopUrl: href,
+            imageUrl: img,
+            urlName: urlName,
+          },
+        }),
       });
 
-      setShowUpdateConfirm(false);
+      if (!res.ok) throw new Error('Incorrect password');
+
+      navigate(`/linkpost/${linkshopId}/edit`, {
+        state: { currentPassword: inputPassword },
+      });
     } catch (err) {
-      alert(err.message); // 비밀번호 틀림 or 기타 오류
-    }
-  };
-
-  // 삭제하기 모달
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const handleDeleteClick = () => {
-    setShowDeleteConfirm(true);
-  };
-
-  const handleDeleteConfirm = async (password) => {
-    try {
-      await deleteLinkShop(linkshopId, password);
-      alert('삭제되었습니다.');
-      navigate('/list'); // 리스트로 이동
-    } catch (err) {
-      alert(err.message); // 실패 메시지 출력
+      setPasswordError('비밀번호가 올바르지 않습니다.');
     }
   };
 
   return (
     <div className={styles.shopBox}>
-      {showDeleteConfirm && (
-        <ConfirmDeleteModal
-          onClose={() => setShowDeleteConfirm(false)}
-          onConfirm={handleDeleteConfirm}
-        />
-      )}
-
-      {showUpdateConfirm && (
-        <ConfirmUpdateModal
-          onClose={() => setShowUpdateConfirm(false)}
-          onConfirm={handleUpdateConfirm}
-        />
-      )}
-
       <div className={styles.icons}>
         <div className={styles.likes}>
-          <img src='/icons/status=fill.png' className={styles.icon}></img>
+          <img src="/icons/status=fill.png" className={styles.icon} />
           {likes}
         </div>
-        {/* TODO: 좋아요 구현 */}
+
         <div className={styles.rightIcons}>
-          <div onClick={handleCopyUrl}>
-            <img src='/icons/share.png' className={styles.icon}></img>
+          <div onClick={() => {
+            navigator.clipboard.writeText(href);
+            alert('링크가 복사되었습니다.');
+          }}>
+            <img src="/icons/share.png" className={styles.icon} />
           </div>
+
           <div onClick={toggleDropdown} className={styles.meatballIconWrapper}>
-            <img src='/icons/meatball.png' className={styles.icon}></img>
-            {/* 드롭다운 메뉴 */}
+            <img src="/icons/meatball.png" className={styles.icon} />
             {isDropdownVisible && (
               <div className={styles.dropdown}>
-                <button className={styles.dropdownItem} onClick={handleUpdateClick}>
+                <button className={styles.dropdownItem} onClick={() => {
+                  setShowPasswordModal(true);
+                  setIsDropdownVisible(false);
+                }}>
                   수정하기
                 </button>
-                <button className={styles.dropdownItemBottom} onClick={handleDeleteClick}>
-                  삭제하기
-                </button>
+                <button className={styles.dropdownItemBottom}>삭제하기</button>
               </div>
             )}
           </div>
         </div>
       </div>
+
       <div className={styles.info}>
         <img src={imgSrc} alt={alt} onError={handleError} className={styles.image} />
         <div className={styles.name}>{name}</div>
         <div className={styles.userId}>@{userId}</div>
       </div>
+
+      {showPasswordModal && (
+        <div className={styles.modal}>
+          <h3>정말 수정하시겠습니까?</h3>
+          <input
+            type="password"
+            placeholder="비밀번호 입력"
+            value={inputPassword}
+            onChange={(e) => setInputPassword(e.target.value)}
+          />
+          {passwordError && <p className={styles.error}>{passwordError}</p>}
+          <div className={styles.modalButtons}>
+            <button className={styles.cancelButton} onClick={() => {
+              setShowPasswordModal(false);
+              setInputPassword('');
+              setPasswordError('');
+            }}>
+              취소
+            </button>
+            <button className={styles.confirmButton} onClick={handlePasswordConfirm}>
+              확인
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
