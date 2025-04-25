@@ -5,6 +5,8 @@ import AppMain from './AppMain';
 import LinkPostPage from './pages/LinkPostPage/LinkPostPage';
 import ListPage from './pages/ListPage/ListPage';
 import LinkDetailPage from './pages/LinkDetailPage/LinkDetailPage';
+import LinkEditPage from './pages/LinkEditPage/LinkEditPage';
+
 
 export default function App() {
   return (
@@ -14,7 +16,11 @@ export default function App() {
         <Route path='/list' element={<AppMain />} />
         <Route path='/linkpost' element={<LinkPostPage />} />
         <Route path='/link/:linkshopId' element={<LinkDetailPage />} />
+        <Route path="/linkpost/:linkshopId/edit" element={<LinkEditPage />} />
+
       </Routes>
     </BrowserRouter>
   );
 }
+
+
