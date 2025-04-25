@@ -6,6 +6,7 @@ import LinkCard from './components/LinkCard/LinkCard';
 import useInfiniteScroll from './hooks/useInfiniteScroll';
 import styles from './styles/AppMain.module.css';
 import SearchNull from './components/SearchNull/SearchNull';
+import { Spinner } from './components/spinner/Spinner';
 
 export default function AppMain() {
   // useState 훅을 사용하여 상태 관리
@@ -183,26 +184,31 @@ export default function AppMain() {
         <FilterModal orderBy={orderBy} setOrderBy={setOrderBy} setShowFilter={setShowFilter} />
       )}
 
-      {/* 메인 컨텐츠: 검색 전/후, 결과 유무에 따른 조건부 렌더링 */}
-      <main className={styles['main-container']}>
-        {!hasSearched ? (
-          // 검색 전: 전체 리스트
-          linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
-        ) : linkShoplist.length > 0 ? (
-          // 검색 후 결과 있음
-          linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
-        ) : (
-          // 검색 후 결과 없음
-          <div className={styles['search-null']}>
-            <SearchNull />
-          </div>
-        )}
+      {/* 로딩 중일 때 스피너 표시 */}
+      {isFetching && linkShoplist.length === 0 ? (
+        <Spinner />
+      ) : (
+        // {/* 메인 컨텐츠: 검색 전/후, 결과 유무에 따른 조건부 렌더링 */}
+        <main className={styles['main-container']}>
+          {!hasSearched ? (
+            // 검색 전: 전체 리스트
+            linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
+          ) : linkShoplist.length > 0 ? (
+            // 검색 후 결과 있음
+            linkShoplist.map((shop) => <LinkCard key={shop.id} data={shop} />)
+          ) : (
+            // 검색 후 결과 없음
+            <div className={styles['search-null']}>
+              <SearchNull />
+            </div>
+          )}
 
-        {/* 무한스크롤 트리거 역할 */}
-        {/* hasNextPage가 true일때만 렌더링됨 (= 더 불러올 데이터가 있을때만) */}
-        {/* useInfiniteScroll 훅에서 fetchMoreShops(다음페이지요청) 실행됨 */}
-        {hasNextPage && <div ref={infiniteScrollRef} style={{ height: '20px' }} />}
-      </main>
+          {/* 무한스크롤 트리거 역할 */}
+          {/* hasNextPage가 true일때만 렌더링됨 (= 더 불러올 데이터가 있을때만) */}
+          {/* useInfiniteScroll 훅에서 fetchMoreShops(다음페이지요청) 실행됨 */}
+          {hasNextPage && <div ref={infiniteScrollRef} style={{ height: '20px' }} />}
+        </main>
+      )}
     </>
   );
 }
