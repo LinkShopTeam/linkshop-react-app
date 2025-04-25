@@ -1,76 +1,105 @@
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styles from './Shopbox.module.css';
+import styles from './ShopBox.module.css';
 import profile1 from '/images/profile1.png';
+import { useParams, useNavigate } from 'react-router-dom';
+import ConfirmDeleteModal from '../../components/modal/ConfirmDeleteModal';
+import ConfirmUpdateModal from '../../components/modal/ConfirmUpdateModal';
+import {
+  deleteLinkShop,
+  fetchLinkShopDetail,
+  validateLinkShopPassword,
+} from '../../api/linkShopApi';
 
-export default function Shopbox({ likes, img, alt, name, userId, urlName, href }) {
-  const [imgSrc, setImgSrc] = useState(img);
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [inputPassword, setInputPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-
+export default function ShopBox({ likes, img, alt, name, userId, href, urlName }) {
   const navigate = useNavigate();
-  const { linkshopId } = useParams(); // assumes route like /link/:linkshopId
+  const [imgSrc, setImgSrc] = useState(img);
+  const { linkshopId } = useParams();
+
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [showUpdateConfirm, setShowUpdateConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const handleError = () => setImgSrc(profile1);
-  const toggleDropdown = () => setIsDropdownVisible(!isDropdownVisible);
 
-  const handlePasswordConfirm = async () => {
+  const handleCopyUrl = async () => {
     try {
-      const res = await fetch(`https://linkshop-api.vercel.app/15-8/linkshops/${linkshopId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          currentPassword: inputPassword,
-          name: name,
-          userId: userId,
-          products: [],
-          shop: {
-            shopUrl: href,
-            imageUrl: img,
-            urlName: urlName,
-          },
-        }),
-      });
-
-      if (!res.ok) throw new Error('Incorrect password');
-
-      navigate(`/linkpost/${linkshopId}/edit`, {
-        state: { currentPassword: inputPassword },
-      });
+      await navigator.clipboard.writeText(href);
+      alert('링크가 클립보드에 복사되었습니다.');
     } catch (err) {
-      setPasswordError('비밀번호가 올바르지 않습니다.');
+      console.error('복사 실패:', err);
+    }
+  };
+
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const handleUpdateClick = () => {
+    setShowUpdateConfirm(true);
+  };
+
+  const handleUpdateConfirm = async (password) => {
+    try {
+      const existingData = await fetchLinkShopDetail(linkshopId);
+      await validateLinkShopPassword(linkshopId, password, existingData);
+      navigate(`/linkpost/${linkshopId}/edit`, {
+        state: { password },
+      });
+      setShowUpdateConfirm(false);
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async (password) => {
+    try {
+      await deleteLinkShop(linkshopId, password);
+      alert('삭제되었습니다.');
+      navigate('/list');
+    } catch (err) {
+      alert('삭제 실패: ' + err.message);
     }
   };
 
   return (
     <div className={styles.shopBox}>
+      {showDeleteConfirm && (
+        <ConfirmDeleteModal
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDeleteConfirm}
+        />
+      )}
+
+      {showUpdateConfirm && (
+        <ConfirmUpdateModal
+          onClose={() => setShowUpdateConfirm(false)}
+          onConfirm={handleUpdateConfirm}
+        />
+      )}
+
       <div className={styles.icons}>
         <div className={styles.likes}>
           <img src="/icons/status=fill.png" className={styles.icon} />
           {likes}
         </div>
-
         <div className={styles.rightIcons}>
-          <div onClick={() => {
-            navigator.clipboard.writeText(href);
-            alert('링크가 복사되었습니다.');
-          }}>
+          <div onClick={handleCopyUrl}>
             <img src="/icons/share.png" className={styles.icon} />
           </div>
-
           <div onClick={toggleDropdown} className={styles.meatballIconWrapper}>
             <img src="/icons/meatball.png" className={styles.icon} />
             {isDropdownVisible && (
               <div className={styles.dropdown}>
-                <button className={styles.dropdownItem} onClick={() => {
-                  setShowPasswordModal(true);
-                  setIsDropdownVisible(false);
-                }}>
+                <button className={styles.dropdownItem} onClick={handleUpdateClick}>
                   수정하기
                 </button>
-                <button className={styles.dropdownItemBottom}>삭제하기</button>
+                <button className={styles.dropdownItemBottom} onClick={handleDeleteClick}>
+                  삭제하기
+                </button>
               </div>
             )}
           </div>
@@ -82,31 +111,6 @@ export default function Shopbox({ likes, img, alt, name, userId, urlName, href }
         <div className={styles.name}>{name}</div>
         <div className={styles.userId}>@{userId}</div>
       </div>
-
-      {showPasswordModal && (
-        <div className={styles.modal}>
-          <h3>정말 수정하시겠습니까?</h3>
-          <input
-            type="password"
-            placeholder="비밀번호 입력"
-            value={inputPassword}
-            onChange={(e) => setInputPassword(e.target.value)}
-          />
-          {passwordError && <p className={styles.error}>{passwordError}</p>}
-          <div className={styles.modalButtons}>
-            <button className={styles.cancelButton} onClick={() => {
-              setShowPasswordModal(false);
-              setInputPassword('');
-              setPasswordError('');
-            }}>
-              취소
-            </button>
-            <button className={styles.confirmButton} onClick={handlePasswordConfirm}>
-              확인
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
