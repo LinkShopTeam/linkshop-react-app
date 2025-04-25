@@ -29,7 +29,7 @@ export default function ProductImage({ imageUrl, alt }) {
       alt={alt}
       width={95}
       height={95}
-      style={{ objectFit: 'cover' }}
+      style={{ objectFit: 'cover', borderRadius: 10 }}
       onError={() => setIsError(true)}
     />
   );

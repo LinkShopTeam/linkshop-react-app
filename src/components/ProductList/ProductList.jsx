@@ -3,6 +3,7 @@
 // 상품 이미지를 최대 3개까지만 보여줍니다.
 
 import styles from './ProductList.module.css';
+import ProductImage from '../productimage/ProductImage';
 
 const ProductList = ({ products }) => {
   const limited = products.slice(0, 3); // 최대 3개까지만 보여줌
@@ -10,7 +11,12 @@ const ProductList = ({ products }) => {
   return (
     <div className={styles.productList}>
       {limited.map((item) => (
-        <img key={item.id} src={item.imageUrl} alt={item.name} className={styles.productImage} />
+        <ProductImage
+          key={item.id}
+          imageUrl={item.imageUrl}
+          alt={item.name}
+          className={styles.productImage}
+        />
       ))}
     </div>
   );
