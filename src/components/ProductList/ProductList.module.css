@@ -3,7 +3,6 @@
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  margin-top: 8px;
 }
 
 .productImage {
