@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getLinkShopList } from './api/linkShopApi';
-import FilterModal from './components/FilterModal';
+import FilterModal from './components/FilterModal/FilterModal';
 import LinkCard from './components/LinkCard/LinkCard';
-import useInfiniteScroll from './hooks/useInfiniteScroll';
-import styles from './styles/AppMain.module.css';
 import SearchNull from './components/SearchNull/SearchNull';
 import { Spinner } from './components/spinner/Spinner';
+import useInfiniteScroll from './hooks/useInfiniteScroll';
+import styles from './styles/AppMain.module.css';
 
 export default function AppMain() {
   // useState 훅을 사용하여 상태 관리
