@@ -6,6 +6,7 @@ import React from 'react';
 
 const LinkCard = React.forwardRef(({ data }, ref) => {
   const { name, userId, likes, products, shop, id } = data;
+  const [imgSrc, setImgSrc] = React.useState(shop.imageUrl);
 
   const navigate = useNavigate();
 
@@ -13,14 +14,20 @@ const LinkCard = React.forwardRef(({ data }, ref) => {
     navigate(`/link/${id}`);
   };
 
+  const handleStoreImageError = () => {
+    setImgSrc('/images/profile1.png'); //깨지면 기본이미지로
+  };
+
   return (
     <div className={styles.container} ref={ref} onClick={handleClick}>
       <div className={styles.header}>
         <img
-          src={shop.imageUrl !== 'https://example.com/...' ? shop.imageUrl : '/images/profile1.png'}
+          src={imgSrc}
           alt='store icon'
           className={styles.avatar}
+          onError={handleStoreImageError} // 이미지로드 실패시 기본이미지로 대체
         />
+
         <div>
           <h2 className={styles.storeName}>{name}</h2>
           <p className={styles.handle}>@{userId}</p>
