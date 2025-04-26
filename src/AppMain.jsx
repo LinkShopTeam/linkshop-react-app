@@ -21,6 +21,7 @@ export default function AppMain() {
 
   const navigate = useNavigate();
 
+  //필터 모달에서 정렬 기준을 바꿨을 때 동작
   useEffect(() => {
     fetchInitialShops();
   }, [orderBy]);
@@ -82,7 +83,7 @@ export default function AppMain() {
   // keyword가 바뀔 때마다 호출되도록 설정
   const handleLinkShopList = async () => {
     const result = await getLinkShopList({ keyword });
-    setLinkShopList(result.list); // 이렇게 수정!!
+    setLinkShopList(result.list);
   };
 
   // 검색어가 바뀔 때마다 getLinkShopList 호출
