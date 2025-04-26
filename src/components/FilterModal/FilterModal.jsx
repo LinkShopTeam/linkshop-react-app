@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles/components/FilterModal.module.css';
+import styles from './FilterModal.module.css';
 
 export default function FilterModal({ orderBy, setOrderBy, setShowFilter }) {
   const options = [
