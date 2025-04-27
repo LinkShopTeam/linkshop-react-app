@@ -9,6 +9,7 @@ import {
   deleteLinkShop,
   fetchLinkShopDetail,
   validateLinkShopPassword,
+  likeLinkShop,
 } from '../../api/linkShopApi';
 
 export default function ShopBox({ likes, img, alt, name, userId, href }) {
@@ -80,6 +81,23 @@ export default function ShopBox({ likes, img, alt, name, userId, href }) {
     }
   };
 
+  // 좋아요
+  const [clickedLikes, setclickedLikes] = useState(likes); // 처음 props로 받은 likes
+
+  const handleLikeClick = async () => {
+    if (!linkshopId) return;
+
+    try {
+      const message = await likeLinkShop(Number(linkshopId));
+      alert(message); // 예: "좋아요 성공"
+
+      // 좋아요 수를 직접 +1
+      setclickedLikes((prev) => prev + 1);
+    } catch (err) {
+      alert('좋아요 실패: ' + err.message);
+    }
+  };
+
   return (
     <div className={styles.shopBox}>
       {showDeleteConfirm && (
@@ -97,11 +115,11 @@ export default function ShopBox({ likes, img, alt, name, userId, href }) {
       )}
 
       <div className={styles.icons}>
-        <div className={styles.likes}>
+        {/* 좋아요 */}
+        <div className={styles.likes} onClick={handleLikeClick}>
           <img src='/icons/status=fill.png' className={styles.icon}></img>
-          {likes}
+          {clickedLikes}
         </div>
-        {/* TODO: 좋아요 구현 */}
         <div className={styles.rightIcons}>
           <div onClick={handleCopyUrl}>
             <img src='/icons/share.png' className={styles.icon}></img>

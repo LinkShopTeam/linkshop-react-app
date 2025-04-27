@@ -146,3 +146,19 @@ export const validateLinkShopPassword = async (linkShopId, password, existingDat
 
   return await response.json(); // 성공 시 반환값
 };
+
+// 좋아요
+export const likeLinkShop = async (linkShopId) => {
+  const response = await fetch(`${baseUrl}/${linkShopId}/like`, {
+    method: 'POST',
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('좋아요 실패:', errorText);
+    throw new Error('좋아요 요청에 실패했습니다.');
+  }
+
+  const { message } = await response.json(); // 서버가 보내는 message만 꺼내기
+  return message; // message (예: "좋아요 성공") 반환
+};
