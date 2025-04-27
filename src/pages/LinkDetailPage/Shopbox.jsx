@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './ShopBox.module.css';
+import styles from './Shopbox.module.css';
 import profile1 from '/images/profile1.png';
 import { useParams, useNavigate } from 'react-router-dom';
 import ConfirmDeleteModal from '../../components/modal/ConfirmDeleteModal';
@@ -83,15 +83,15 @@ export default function ShopBox({ likes, img, alt, name, userId, href, urlName }
 
       <div className={styles.icons}>
         <div className={styles.likes}>
-          <img src="/icons/status=fill.png" className={styles.icon} />
+          <img src='/icons/status=fill.png' className={styles.icon} />
           {likes}
         </div>
         <div className={styles.rightIcons}>
           <div onClick={handleCopyUrl}>
-            <img src="/icons/share.png" className={styles.icon} />
+            <img src='/icons/share.png' className={styles.icon} />
           </div>
           <div onClick={toggleDropdown} className={styles.meatballIconWrapper}>
-            <img src="/icons/meatball.png" className={styles.icon} />
+            <img src='/icons/meatball.png' className={styles.icon} />
             {isDropdownVisible && (
               <div className={styles.dropdown}>
                 <button className={styles.dropdownItem} onClick={handleUpdateClick}>
