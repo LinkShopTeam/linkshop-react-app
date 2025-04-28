@@ -54,7 +54,7 @@ export default function ShopBox({ likes, img, alt, name, userId, href }) {
       await validateLinkShopPassword(linkshopId, password, existingData);
 
       // 비밀번호 유효하면 수정 페이지로 이동
-      navigate(`/edit/${linkshopId}`, {
+      navigate(`/linkpost/${linkshopId}/edit`, {
         state: { password },
       });
 
