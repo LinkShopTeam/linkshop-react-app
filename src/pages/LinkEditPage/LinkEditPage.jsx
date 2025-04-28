@@ -39,6 +39,7 @@ export default function LinkEditPage() {
           data.products.map((product) => ({
             ...product,
             image: null,
+            imageUrl: product.imageUrl,
           }))
         );
       } catch (err) {
@@ -49,14 +50,22 @@ export default function LinkEditPage() {
   }, [linkshopId]);
 
   const uploadImage = async (file) => {
-    const formData = new FormData();
-    formData.append('image', file);
-    const res = await fetch('https://linkshop-api.vercel.app/images/upload', {
-      method: 'POST',
-      body: formData,
-    });
-    const data = await res.json();
-    return data.url;
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch('https://linkshop-api.vercel.app/images/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error('이미지 업로드 실패');
+      }
+      const data = await res.json();
+      return data.url;
+    } catch (error) {
+      alert(error.message);
+      throw error;
+    }
   };
 
   const handleChange = (index, field, value) => {
@@ -101,6 +110,7 @@ export default function LinkEditPage() {
       });
 
       if (!res.ok) throw new Error('수정 실패');
+
       setShowToast(true);
       setShowModal(true);
       setTimeout(() => setShowToast(false), 2500);
@@ -110,21 +120,45 @@ export default function LinkEditPage() {
   };
 
   return (
-    <div className={styles.pageWrapper}>
+    <div 
+      className={styles.pageWrapper}>
       <header className={styles.header}>
-        <h1 className={styles.logo}>LINK SHOP</h1>
-        <button className={styles.backButton} onClick={() => navigate('/list')}>돌아가기</button>
+        <h1
+          className={styles.logo}
+          onClick={() => navigate('/list')}
+          style={{ cursor: 'pointer' }}
+        >
+          LINK SHOP
+        </h1>
+        <button
+          className={styles.backButton}
+          onClick={() => navigate('/list')}
+        >
+          돌아가기
+        </button>
       </header>
 
+
+      {/* 대표 상품 수정 */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>대표 상품</h2>
         </div>
 
         {products.map((product, index) => (
-          <div className={styles.card} key={product.id}>
+          <div className={styles.card} key={index}>
             <p className={styles.label}>상품 대표 이미지</p>
             <p className={styles.hint}>상품 이미지를 첨부해주세요</p>
+
+            {/* 미리보기 */}
+            {(product.image || product.imageUrl) && (
+              <img
+                src={product.image ? URL.createObjectURL(product.image) : product.imageUrl}
+                alt="product preview"
+                className={styles.previewImage}
+              />
+            )}
+
             <label htmlFor={`product-image-${index}`} className={styles.fileButton}>파일 첨부</label>
             <input
               type="file"
@@ -132,9 +166,13 @@ export default function LinkEditPage() {
               accept="image/*"
               style={{ display: 'none' }}
               onChange={(e) => {
-                const updated = [...products];
-                updated[index].image = e.target.files[0];
-                setProducts(updated);
+                const file = e.target.files[0];
+                if (file) {
+                  const updated = [...products];
+                  updated[index].image = file;
+                  updated[index].imageUrl = URL.createObjectURL(file);
+                  setProducts(updated);
+                }
               }}
             />
 
@@ -158,11 +196,22 @@ export default function LinkEditPage() {
         ))}
       </section>
 
+      {/* 쇼핑몰 정보 수정 */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>내 쇼핑몰</h2>
         <div className={styles.card}>
           <p className={styles.label}>쇼핑몰 대표 이미지</p>
           <p className={styles.hint}>쇼핑몰 이미지를 첨부해주세요</p>
+
+          {/* 쇼핑몰 미리보기 */}
+          {(shopInfo.image || shopInfo.imageUrl) && (
+            <img
+              src={shopInfo.image ? URL.createObjectURL(shopInfo.image) : shopInfo.imageUrl}
+              alt="shop preview"
+              className={styles.previewImage}
+            />
+          )}
+
           <label htmlFor="shop-image" className={styles.fileButton}>파일 첨부</label>
           <input
             type="file"
@@ -171,7 +220,13 @@ export default function LinkEditPage() {
             style={{ display: 'none' }}
             onChange={(e) => {
               const file = e.target.files[0];
-              if (file) setShopInfo({ ...shopInfo, image: file });
+              if (file) {
+                setShopInfo((prev) => ({
+                  ...prev,
+                  image: file,
+                  imageUrl: URL.createObjectURL(file),
+                }));
+              }
             }}
           />
 
@@ -209,10 +264,12 @@ export default function LinkEditPage() {
         </div>
       </section>
 
+      {/* 제출 버튼 */}
       <div className={styles.submitWrapper}>
         <button className={styles.submitButton} onClick={handleSubmit}>수정하기</button>
       </div>
 
+      {/* 알림 토스트 & 성공 모달 */}
       <Toast show={showToast} message="수정이 완료되었습니다!" />
       <SuccessModal
         visible={showModal}
@@ -220,7 +277,9 @@ export default function LinkEditPage() {
         onClose={() => navigate(`/link/${linkshopId}`)}
       />
 
+      {/* 에러 메시지 */}
       {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 }
+
