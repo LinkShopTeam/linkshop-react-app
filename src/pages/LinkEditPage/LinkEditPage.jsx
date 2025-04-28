@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { fetchLinkShopDetail } from '../../api/linkShopApi';
-import Toast from '../../components/Toast';
-import SuccessModal from '../../components/SuccessModal';
+import SuccessModal from '../../components/SuccessModal/SuccessModal';
+import Toast from '../../components/Toast/Toast';
 import styles from './LinkEditPage.module.css';
 
 export default function LinkEditPage() {
