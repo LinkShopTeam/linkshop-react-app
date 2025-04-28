@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styles from './LinkPostPage.module.css';
 import SuccessModal from '../../components/SuccessModal/SuccessModal';
 import Toast from '../../components/Toast/Toast';
+
 
 const LinkPostPage = () => {
   const navigate = useNavigate();
