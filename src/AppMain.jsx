@@ -151,9 +151,13 @@ export default function AppMain() {
       {/* 헤더 영역: 로고와 생성하기 버튼 */}
       <div className={styles.header}>
         {/* 로고 클릭 시 /list 이동 */}
-        <h1 className={styles.logo} onClick={handleLogoClick}>
-          LINK SHOP
-        </h1>
+        <img
+          src='/images/logo.png'
+          alt='Link Shop Logo'
+          className={styles.logo}
+          onClick={handleLogoClick}
+        />
+
         {/* 생성하기 버튼 클릭시 /linkpost로 이동 */}
         <h1>
           <button className={styles['create-button']} onClick={handleCreateClick}>
