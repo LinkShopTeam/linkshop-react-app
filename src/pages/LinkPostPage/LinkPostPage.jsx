@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import SuccessModal from '../../components/SuccessModal/SuccessModal';
 import Toast from '../../components/Toast/Toast';
-import SuccessModal from '../../components/SuccessModal';
 
 const LinkPostPage = () => {
   const navigate = useNavigate();
