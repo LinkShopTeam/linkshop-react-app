@@ -98,7 +98,13 @@ const LinkPostPage = () => {
   return (
     <div className={styles.pageWrapper}>
       <header className={styles.header}>
-        <img src="/images/logo.png" alt="Link Shop Logo" className={styles.logo} />
+        <img
+          src="/images/logo.png"
+          alt="Link Shop Logo"
+          className={styles.logo}
+          onClick={() => navigate('/list')}
+          style={{ cursor: 'pointer' }}
+        />
         <button className={styles.backButton} onClick={handleBack}>돌아가기</button>
       </header>
 
