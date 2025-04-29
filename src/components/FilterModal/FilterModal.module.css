@@ -62,3 +62,9 @@
 .button:hover {
   opacity: 1;
 }
+
+.filter-button {
+  width: 20px; /* 너비 설정 */
+  height: 20px; /* 높이 설정 */
+  margin-left: 8px; /* (선택) 텍스트랑 간격 */
+}
