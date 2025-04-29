@@ -24,7 +24,7 @@ export default function FilterModal({ orderBy, setOrderBy, setShowFilter }) {
         <div className={styles.title}>
           정렬
           <button className={styles.button} onClick={() => setShowFilter(false)}>
-            <img src='/public/images/close.png' />
+            <img src='/images/close.png' />
           </button>
         </div>
 
