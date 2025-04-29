@@ -9,8 +9,8 @@ export default function LinkEditPage() {
   const { linkshopId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const password = location.state?.currentPassword || '';
 
+  const [password, setPassword] = useState(location.state?.currentPassword || '');
   const [shopInfo, setShopInfo] = useState({
     name: '',
     url: '',
@@ -42,7 +42,7 @@ export default function LinkEditPage() {
             imageUrl: product.imageUrl,
           }))
         );
-      } catch (err) {
+      } catch (error) {
         setError('정보를 불러오지 못했습니다.');
       }
     };
@@ -75,6 +75,14 @@ export default function LinkEditPage() {
   };
 
   const handleSubmit = async () => {
+    if (!password) {
+      alert('비밀번호가 누락되었습니다.');
+      return;
+    }
+    if (products.some((product) => !product.name || !product.price)) {
+      alert('상품 이름과 가격을 모두 입력해주세요.');
+      return;
+    }
     try {
       const shopImageUrl = shopInfo.image
         ? await uploadImage(shopInfo.image)
@@ -91,6 +99,25 @@ export default function LinkEditPage() {
             imageUrl,
           };
         })
+      );
+
+      console.log(
+        '서버로 보낼 최종 데이터:',
+        JSON.stringify(
+          {
+            currentPassword: password,
+            name: shopInfo.name,
+            userId: shopInfo.userId,
+            products: productData,
+            shop: {
+              shopUrl: shopInfo.url,
+              imageUrl: shopImageUrl,
+              urlName: shopInfo.name,
+            },
+          },
+          null,
+          2
+        )
       );
 
       const res = await fetch(`https://linkshop-api.vercel.app/15-8/linkshops/${linkshopId}`, {
@@ -114,22 +141,21 @@ export default function LinkEditPage() {
       setShowToast(true);
       setShowModal(true);
       setTimeout(() => setShowToast(false), 2500);
-    } catch (err) {
+    } catch (error) {
       setError('수정 중 오류가 발생했습니다.');
     }
   };
 
   return (
-    <div 
-      className={styles.pageWrapper}>
+    <div className={styles.pageWrapper}>
       <header className={styles.header}>
-        <h1
+        <img
+          src="/images/logo.png"
+          alt="Link Shop Logo"
           className={styles.logo}
           onClick={() => navigate('/list')}
           style={{ cursor: 'pointer' }}
-        >
-          LINK SHOP
-        </h1>
+        />
         <button
           className={styles.backButton}
           onClick={() => navigate('/list')}
@@ -138,8 +164,6 @@ export default function LinkEditPage() {
         </button>
       </header>
 
-
-      {/* 대표 상품 수정 */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>대표 상품</h2>
@@ -150,7 +174,6 @@ export default function LinkEditPage() {
             <p className={styles.label}>상품 대표 이미지</p>
             <p className={styles.hint}>상품 이미지를 첨부해주세요</p>
 
-            {/* 미리보기 */}
             {(product.image || product.imageUrl) && (
               <img
                 src={product.image ? URL.createObjectURL(product.image) : product.imageUrl}
@@ -196,14 +219,12 @@ export default function LinkEditPage() {
         ))}
       </section>
 
-      {/* 쇼핑몰 정보 수정 */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>내 쇼핑몰</h2>
         <div className={styles.card}>
           <p className={styles.label}>쇼핑몰 대표 이미지</p>
           <p className={styles.hint}>쇼핑몰 이미지를 첨부해주세요</p>
 
-          {/* 쇼핑몰 미리보기 */}
           {(shopInfo.image || shopInfo.imageUrl) && (
             <img
               src={shopInfo.image ? URL.createObjectURL(shopInfo.image) : shopInfo.imageUrl}
@@ -257,19 +278,18 @@ export default function LinkEditPage() {
           <p className={styles.label}>비밀번호</p>
           <input
             className={styles.input}
+            type="password"
             value={password}
-            disabled
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="비밀번호를 입력해주세요."
           />
         </div>
       </section>
 
-      {/* 제출 버튼 */}
       <div className={styles.submitWrapper}>
         <button className={styles.submitButton} onClick={handleSubmit}>수정하기</button>
       </div>
 
-      {/* 알림 토스트 & 성공 모달 */}
       <Toast show={showToast} message="수정이 완료되었습니다!" />
       <SuccessModal
         visible={showModal}
@@ -277,7 +297,6 @@ export default function LinkEditPage() {
         onClose={() => navigate(`/link/${linkshopId}`)}
       />
 
-      {/* 에러 메시지 */}
       {error && <p className={styles.error}>{error}</p>}
     </div>
   );
